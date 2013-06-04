@@ -1,37 +1,52 @@
-package com.tandemg.scratchpad;
+/*package com.tandemg.scratchpad;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 
 import android.util.Log;
 
 public class ScratchpadSocket {
 	 
     private String serverMessage;
-    public static final String SERVERIP = "192.168.0.102"; //your computer IP address
-    public static final int SERVERPORT = 4444;
+    public static final String SERVERIP = "10.255.1.30"; //your computer IP address
+    public static final int SERVERPORT = 2301;
     private OnMessageReceived mMessageListener = null;
     private boolean mRun = false;
  
     PrintWriter out;
     BufferedReader in;
+    
+    
+	private Socket nsocket;
+    private InputStream nis; //Network Input Stream
+    private OutputStream nos; //Network Output Stream
+    
+    
+    private String TAG = "ScratchpadSocket";
+    
+    
  
-    /**
+    *//**
      *  Constructor of the class. OnMessagedReceived listens for the messages received from server
-     */
+     *//*
     public ScratchpadSocket(OnMessageReceived listener) {
         mMessageListener = listener;
     }
  
-    /**
+    *//**
      * Sends the message entered by client to the server
      * @param message text entered by client
-     */
+     *//*
     public void sendMessage(String message){
         if (out != null && !out.checkError()) {
             out.println(message);
@@ -46,6 +61,51 @@ public class ScratchpadSocket {
     public void run() {
  
         mRun = true;
+        
+        try {
+			SocketAddress sockaddr = new InetSocketAddress("10.255.1.30", 2301);
+			nsocket = new Socket();
+			Log.i("AsyncTask", "socket created");
+			nsocket.connect(sockaddr, SOCKET_TIMEOUT); //10 second connection timeout
+			if (nsocket.isConnected()) {
+				nis = nsocket.getInputStream();
+				nos = nsocket.getOutputStream();
+				Log.i("AsyncTask", "doInBackground: Socket created, streams assigned");
+				Log.i("AsyncTask", "doInBackground: Waiting for inital data...");
+				String cmd = "D 1 1 1";
+				nos.write(cmd.getBytes());
+             }
+		} catch (IOException e) {
+			e.printStackTrace();
+			Log.i("AsyncTask", "doInBackground: IOException " + e.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Log.i("AsyncTask", "doInBackground: Exception " + e.toString());
+		} finally {
+            try {
+				nis.close();
+				nos.close();
+				nsocket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+            }
+            Log.i("AsyncTask", "doInBackground: Finished");
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
  
         try {
             //here you must put your computer's IP address.
@@ -54,7 +114,8 @@ public class ScratchpadSocket {
             Log.e("TCP Client", "C: Connecting...");
  
             //create a socket to make the connection with the server
-            Socket socket = new Socket(serverAddr, SERVERPORT);
+            nsocket = new Socket(serverAddr, SERVERPORT);
+
  
             try {
  
@@ -108,3 +169,4 @@ public class ScratchpadSocket {
         public void messageReceived(String message);
     }
 }
+*/

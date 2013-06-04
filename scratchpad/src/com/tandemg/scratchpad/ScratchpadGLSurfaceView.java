@@ -53,8 +53,6 @@ public class ScratchpadGLSurfaceView extends GLSurfaceView {
     	mClient.handleEvent_Trackball();
     	return true;
     }
-    
-    private static final String DTAG = "IDOR";
     	
 	@Override
     public boolean onTouchEvent(MotionEvent e) {
@@ -62,59 +60,22 @@ public class ScratchpadGLSurfaceView extends GLSurfaceView {
         // and other input controls. In this case, you are only
         // interested in events where the touch position changed.
 		
-		Log.v(TAG, new Exception().getStackTrace()[0].getMethodName() + ", event = " + e );
-		switch( e.getAction())
-		{
-		case MotionEvent.ACTION_DOWN:
-			Log.d(DTAG, "D " + e.getX() + " " + e.getY() + " " + e.getPressure());
-			break;
-		case MotionEvent.ACTION_MOVE:
-			Log.d(DTAG, "M " + e.getX() + " " + e.getY() + " " + e.getPressure());
-			break;
-		case MotionEvent.ACTION_UP:
-			Log.d(DTAG, "U " + e.getX() + " " + e.getY() + " " + e.getPressure());
-			break;
-		}
+//		Log.v(TAG, new Exception().getStackTrace()[0].getMethodName() + ", event = " + e );
+//		switch( e.getAction())
+//		{
+//		case MotionEvent.ACTION_DOWN:
+//			Log.d(TAG, "D " + e.getX() + " " + e.getY() + " " + e.getPressure());
+//			break;
+//		case MotionEvent.ACTION_MOVE:
+//			Log.d(TAG, "M " + e.getX() + " " + e.getY() + " " + e.getPressure());
+//			break;
+//		case MotionEvent.ACTION_UP:
+//			Log.d(TAG, "U " + e.getX() + " " + e.getY() + " " + e.getPressure());
+//			break;
+//		}
 		
-//		mClient.handleEvent_Touch(e.getX(), e.getY());
-		/*
-		String s = String.valueOf(e.getX());
-		Log.v(TAG, s);
-//		InputDevice.MotionRange range = InputDevice.GetMotionRange(1,1);
-		e.getAction();
-		e.getX();
-		e.getY();
-		e.getDevice();	*/	
-		/*
-        float x = e.getX();
-        float y = e.getY();
-
-        switch (e.getAction()) {
-            case MotionEvent.ACTION_MOVE:
-
-                float dx = x - mPreviousX;
-                float dy = y - mPreviousY;
-
-                // reverse direction of rotation above the mid-line
-                if (y > getHeight() / 2) {
-                  dx = dx * -1 ;
-                }
-
-                // reverse direction of rotation to left of the mid-line
-                if (x < getWidth() / 2) {
-                  dy = dy * -1 ;
-                }
-
-                mRenderer.mAngle += (dx + dy) * TOUCH_SCALE_FACTOR;  // = 180.0f / 320
-                requestRender();
-                break;
-            case MotionEvent.ACTION_HOVER_EXIT:
-            	break;
-        }
-
-        mPreviousX = x;
-        mPreviousY = y;
-        */
+		mClient.handleEvent_Touch(e);
+		
 		return true;
 	}
 }
