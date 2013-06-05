@@ -1,18 +1,19 @@
 package com.tandemg.scratchpad;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
 import java.nio.CharBuffer;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 import android.util.Log;
 
-public class TCPClient {
+public class TCPClient implements Runnable {
 
 	private String serverMessage;
 
@@ -27,7 +28,50 @@ public class TCPClient {
 	private OutputStreamWriter out;
 	private InputStreamReader in;
 
-	private static final String TAG = "TCPClient";
+	private static final String TAG = "TCPClient";	
+	
+	private void doTest(){
+		Log.v(TAG, "searching for nodes");
+		try {			
+			for (Enumeration<NetworkInterface> ifaces = 
+		               NetworkInterface.getNetworkInterfaces();
+		             ifaces.hasMoreElements(); )
+	        {
+	            NetworkInterface iface = ifaces.nextElement();
+	            System.out.println(iface.getName() + ":");
+	            for (Enumeration<InetAddress> addresses =
+	                   iface.getInetAddresses();
+	                 addresses.hasMoreElements(); )
+	            {
+	                InetAddress address = addresses.nextElement();
+	                if(address.isAnyLocalAddress())
+	                	Log.v(TAG, "  local address" + address);
+	                else
+	                	Log.v(TAG, "  NOT local address" + address);
+	            }
+	        }			
+			
+			InetAddress[] inetAddress = null;
+			List<String> hostList = new ArrayList<String>();
+			NetworkInterface nif = NetworkInterface.getByName("wlan0");
+			Log.v(TAG, "nif: " + nif.toString());
+			String host = nif.getInetAddresses().toString();
+			Log.v(TAG, "host address: " + host);
+			inetAddress = InetAddress.getAllByName(host);			
+			
+			for(int i = 0; i < inetAddress.length; i++){
+				hostList.add(inetAddress[i].getClass() + " -\n"
+						+ inetAddress[i].getHostName() + "\n"
+						+ inetAddress[i].getHostAddress());
+				Log.v(TAG, inetAddress[i].getClass() + " -\n"
+						+ inetAddress[i].getHostName() + "\n"
+						+ inetAddress[i].getHostAddress());
+			}
+		} catch(Exception e) {
+			Log.e(TAG, "general error while searching for client: " + e.toString(), e);
+		}
+		Log.v(TAG, "finished searching");
+ 	}
  
 	/**
 	 *  Constructor of the class. OnMessagedReceived listens for the messages received from server
@@ -43,7 +87,6 @@ public class TCPClient {
     public void sendMessage(String message){
 		if (out != null /*&& !out.checkError()*/) {
 			try {
-//				out.write(message.toCharArray(), 0, message.length());
 				out.write(message + "\n");
 //				out.println(message);
 				out.flush();
@@ -55,14 +98,17 @@ public class TCPClient {
 		}
 	}
  
-	public void stopClient(){
+	public void stopClient() throws IOException {
 		mRun = false;
-		in.notify();		
+		if(mSocket != null)
+			mSocket.close();
+		mSocket = null;
 	}
  
     public void run() { 
         mRun = true;
-        try {        	
+        try {
+        	doTest();
             InetAddress serverAddr = InetAddress.getByName(SERVERIP);            
             Log.e(TAG, "C: Connecting...");
             //create a socket to make the connection with the server
@@ -76,8 +122,12 @@ public class TCPClient {
                     while (mRun) {
                     	//serverMessage = in.readLine();
                     	char arr[] = new char [256];
-                    	int n = in.read(arr, 0, 256);
-                    	Log.d(TAG, "read " + String.valueOf(n) + " bytes from socket");
+                    	int n;
+                    	try {
+                    		n = in.read(arr, 0, 256);
+                    	} catch(IOException e) {
+                    		continue;
+                    	}
                     	serverMessage = String.copyValueOf(arr, 0, n); //= arr.toString();
                         if(serverMessage != null && mMessageListener != null) {
                             //call the method messageReceived from MyActivity class
@@ -85,13 +135,12 @@ public class TCPClient {
                         }
                         serverMessage = null;
                     }
-                    Log.d(TAG, "RESPONSE FROM SERVER: S: Received Message: '" + serverMessage + "'");
             } catch (Exception e) { 
             	Log.e(TAG, "general error while waiting for server data: " + e.toString(), e); 
             } finally {
 				//the socket must be closed. It is not possible to reconnect to this socket
 				// after it is closed, which means a new socket instance has to be created.
-            	Log.e(TAG, "Closing socket");
+            	Log.i(TAG, "Closing socket");
 				if( in != null ) {
 					in.close();
 					in = null;
@@ -100,14 +149,20 @@ public class TCPClient {
 					out.close();
 					out = null;
 				}
-				mSocket.close();
-				mSocket = null;
+				if( mSocket != null ) {
+					mSocket.close();
+					mSocket = null;
+				}
             }
 		} catch(IOException e) {
 			Log.e(TAG, "TCP Client has stopped running duo to an IO error: " + e.toString(), e);
 		} catch (Exception e) { 
 			Log.e(TAG, "TCP Client has stopped running duo to a general error: " + e.toString(), e); 
 		}
+    }
+    
+    public boolean connected() {
+    	return mSocket.isConnected();
     }
     
     public void notifyDown(float x, float y, float pressure) {
@@ -128,7 +183,7 @@ public class TCPClient {
 				String.valueOf(y) + " " +
 				String.valueOf(pressure));
     }
-    public void notifyDimensions(float height, float width) {
+    public void notifyDimensions(int height, int width) {
     	this.sendMessage("d " + 
 				String.valueOf(height) + " " +
 				String.valueOf(width));
