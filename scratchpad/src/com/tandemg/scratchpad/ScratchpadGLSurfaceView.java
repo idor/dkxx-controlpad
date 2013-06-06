@@ -9,13 +9,12 @@ import android.view.MotionEvent;
 public class ScratchpadGLSurfaceView extends GLSurfaceView {
 
     private final ScratchpadGLRenderer mRenderer;
-    private IScartchpadClient mClient;
+    private IScartchpadClient mClient = null;
     private static final String TAG = "ScratchpadGLSurfaceView";
 
-    public ScratchpadGLSurfaceView(Context context, IScartchpadClient client) {
+    public ScratchpadGLSurfaceView(Context context) {
         super(context);
         
-        mClient = client;
         // Create an OpenGL ES 2.0 context.
         setEGLContextClientVersion(2);
         // Set the Renderer for drawing on the GLSurfaceView
@@ -23,8 +22,11 @@ public class ScratchpadGLSurfaceView extends GLSurfaceView {
         setRenderer(mRenderer);
         // Render the view only when there is a change in the drawing data
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-        
-        Log.v(TAG, mClient.clientName());
+    }
+    
+    public void setClient(IScartchpadClient client) {
+    	mClient = client;
+    	Log.v(TAG, mClient.clientName());
     }
 
     @Override

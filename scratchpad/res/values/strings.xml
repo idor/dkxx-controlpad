@@ -3,6 +3,8 @@
 
     <string name="app_name">scratchpad</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="scratchpad_view">scratchpad</string>
+    <string name="button_back">BACK!</string>
+    <string name="button_dummy"></string>
 
 </resources>

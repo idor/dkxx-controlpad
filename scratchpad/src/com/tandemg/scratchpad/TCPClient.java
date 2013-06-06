@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.Socket;
-import java.nio.CharBuffer;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -44,12 +45,13 @@ public class TCPClient implements Runnable {
 	                 addresses.hasMoreElements(); )
 	            {
 	                InetAddress address = addresses.nextElement();
-	                if(address.isAnyLocalAddress())
-	                	Log.v(TAG, "  local address" + address);
-	                else
-	                	Log.v(TAG, "  NOT local address" + address);
+	                Log.v(TAG, "  address: " + address.getHostAddress());
+//	                if(address.isAnyLocalAddress())
+//	                	Log.v(TAG, "  local address" + address);
+//	                else
+//	                	Log.v(TAG, "  NOT local address" + address);
 	            }
-	        }			
+	        }
 			
 			InetAddress[] inetAddress = null;
 			List<String> hostList = new ArrayList<String>();
@@ -57,7 +59,7 @@ public class TCPClient implements Runnable {
 			Log.v(TAG, "nif: " + nif.toString());
 			String host = nif.getInetAddresses().toString();
 			Log.v(TAG, "host address: " + host);
-			inetAddress = InetAddress.getAllByName(host);			
+			inetAddress = InetAddress.getAllByName("192.168.2.3");			
 			
 			for(int i = 0; i < inetAddress.length; i++){
 				hostList.add(inetAddress[i].getClass() + " -\n"
@@ -72,7 +74,7 @@ public class TCPClient implements Runnable {
 		}
 		Log.v(TAG, "finished searching");
  	}
- 
+
 	/**
 	 *  Constructor of the class. OnMessagedReceived listens for the messages received from server
 	 */
@@ -104,11 +106,43 @@ public class TCPClient implements Runnable {
 			mSocket.close();
 		mSocket = null;
 	}
+	
+	public String getLocalIpAddress() {
+	    try {
+	        for (Enumeration<NetworkInterface> en = NetworkInterface
+	                .getNetworkInterfaces(); en.hasMoreElements();) {
+	            NetworkInterface intf = en.nextElement();
+	            for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+	                InetAddress inetAddress = enumIpAddr.nextElement();
+	                if (!inetAddress.isLoopbackAddress()) {
+	                    return inetAddress.getHostAddress().toString();
+	                }
+	            }
+	        }
+	    } catch (SocketException ex) {}
+	    return null;
+	}
+
+	public static String getBroadcast() throws SocketException {
+	    System.setProperty("java.net.preferIPv4Stack", "true");
+	    for (Enumeration<NetworkInterface> niEnum = NetworkInterface.getNetworkInterfaces(); niEnum.hasMoreElements();) {
+	        NetworkInterface ni = niEnum.nextElement();
+	        if (!ni.isLoopback()) {
+	            for (InterfaceAddress interfaceAddress : ni.getInterfaceAddresses()) {
+	                return interfaceAddress.getBroadcast().toString().substring(1);
+	            }
+	        }
+	    }
+	    return null;
+	}
+
  
     public void run() { 
         mRun = true;
         try {
-        	doTest();
+//        	Log.d(TAG, "local ip address: " + getLocalIpAddress());
+//        	Log.d(TAG, "broadcast: " + getBroadcast());
+//        	doTest();
             InetAddress serverAddr = InetAddress.getByName(SERVERIP);            
             Log.e(TAG, "C: Connecting...");
             //create a socket to make the connection with the server
@@ -187,6 +221,9 @@ public class TCPClient implements Runnable {
     	this.sendMessage("d " + 
 				String.valueOf(height) + " " +
 				String.valueOf(width));
+    }
+    public void notifyBack() {
+    	this.sendMessage("B");
     }
  
 	//Declare the interface. The method messageReceived(String message) will must be implemented in the MyActivity
