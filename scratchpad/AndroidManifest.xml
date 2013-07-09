@@ -7,8 +7,9 @@
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="17" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-<!-- android:screenOrientation="nosensor" -->
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- android:screenOrientation="nosensor" -->
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -16,7 +17,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.tandemg.scratchpad.MainActivity"
-            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize"		    
+            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

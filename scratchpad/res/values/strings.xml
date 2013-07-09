@@ -6,5 +6,6 @@
     <string name="scratchpad_view">scratchpad</string>
     <string name="button_back">BACK!</string>
     <string name="button_dummy"></string>
+    <string name="chk_input_type">Mouse</string>
 
 </resources>

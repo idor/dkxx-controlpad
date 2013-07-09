@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
-    
+
     <LinearLayout
         android:id="@+id/surface"
         android:layout_width="match_parent"
@@ -20,26 +20,59 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center|bottom"
+        android:orientation="horizontal" >
+    </LinearLayout>
+
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center|bottom"
+        android:orientation="horizontal" >
+    </LinearLayout>
+
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="bottom"
-        style="?android:attr/buttonBarStyle"
         android:orientation="horizontal" >
 
         <Button
-            style="?android:attr/buttonBarButtonStyle"            
             android:id="@+id/button_back"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_back"
-            android:onClick="onClick_Back" />
+            android:onClick="onClick_Back"
+            android:text="@string/button_back" />
 
         <Button
-            style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/button_dummy"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/button_dummy" />
+
+        <!--
+             <CheckBox
+            android:id="@+id/chk_input_type"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right|center_vertical|center_horizontal"
+            android:onClick="onClick_InputType"
+            android:text="@string/chk_input_type" />
+        -->
+
+        <CheckBox
+            android:id="@+id/chk_input_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/chk_input_type" />
     </LinearLayout>
 
 </LinearLayout>
