@@ -10,14 +10,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
-public class MainActivity extends Activity implements IScartchpadClient {
+public class TouchpadActivity extends Activity implements IScartchpadClient {
 
 	private static final int INPUT_TYPE_TOUCH = 0;
 	private static final int INPUT_TYPE_MOUSE = 1;
 	private ScratchpadGLSurfaceView mGLView = null;
 	private TCPClient mTcpClient = null;
 	private Thread mClientThread = null;
-	private static final String TAG = "MainActivity";
+	private static final String TAG = "TouchpadActivity";
 	private int mHeight, mWidth;
 	private Boolean mDimensionsSentToClient = false;
 	private int mInputType = INPUT_TYPE_TOUCH;
@@ -25,7 +25,7 @@ public class MainActivity extends Activity implements IScartchpadClient {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_touchpad);
 		// keep screen on while app is running
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
