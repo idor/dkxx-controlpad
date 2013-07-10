@@ -16,20 +16,29 @@ import android.util.Log;
 
 public class TCPClient implements Runnable {
 
+	private static final int EV_MOVE = 0;
+	private static final int EV_BTN_LEFT_PRESS = 1;
+	private static final int EV_BTN_LEFT_RELEASE = 2;
+	private static final int EV_BTN_RIGHT_PRESS = 3;
+	private static final int EV_BTN_RIGHT_RELEASE = 4;
+	private static final int EV_BTN_MIDDLE_PRESS = 5;
+	private static final int EV_BTN_MIDDLE_RELEASE = 6;
+	private static final int EV_SCROLL_HORIZ = 7;
+	private static final int EV_SCROLL_VERT = 8;
+
+	private static final String TAG = "TCPClient";
+	private static TCPClient instance = null;
 	private String serverMessage;
 
 	public static final String SERVERIP = "192.168.43.140";
 	public static final int SERVERPORT = 2301;
 	private Socket mSocket = null;
 	private OnMessageReceived mMessageListener = null;
+	private Thread mClientThread = null;
 	private boolean mRun = false;
 
-	// private PrintWriter out;
-	// private BufferedReader in;
 	private OutputStreamWriter out;
 	private InputStreamReader in;
-
-	private static final String TAG = "TCPClient";
 
 	private void doTest() {
 		Log.v(TAG, "searching for nodes");
@@ -74,12 +83,24 @@ public class TCPClient implements Runnable {
 		Log.v(TAG, "finished searching");
 	}
 
-	/**
-	 * Constructor of the class. OnMessagedReceived listens for the messages
-	 * received from server
-	 */
-	public TCPClient(OnMessageReceived listener) {
-		mMessageListener = listener;
+	public static synchronized TCPClient getInstance() {
+		if (instance == null) {
+			instance = new TCPClient();
+		}
+		return instance;
+	}
+
+	private TCPClient() {
+		mMessageListener = new TCPClient.OnMessageReceived() {
+
+			@Override
+			public void messageReceived(String message) {
+				Log.d(TAG, "message received from TCPClient: " + message);
+			}
+		};
+
+		mClientThread = new Thread(this);
+		mClientThread.start();
 	}
 
 	/**
@@ -89,16 +110,28 @@ public class TCPClient implements Runnable {
 	 *            text entered by client
 	 */
 	public void sendMessage(String message) {
-		if (out != null /* && !out.checkError() */) {
-			try {
-				out.write(message + "\n");
-				// out.println(message);
-				out.flush();
-				Log.d(TAG, "Sent.");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		try {
+			if (mClientThread == null) {
+				throw new Exception("connection thread was not created yet");
 			}
+			if (mClientThread.isAlive() != true) {
+				throw new Exception("connection thread not running");
+			}
+			if (connected() != true) {
+				throw new Exception("client is not connected");
+			}
+			if (out != null) {
+				try {
+					out.write(message + "\n");
+					out.flush();
+					Log.d(TAG, "Sent.");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		} catch (Exception e) {
+			Log.e(TAG, "Error: " + e.toString(), e);
+		} finally {
 		}
 	}
 
@@ -237,6 +270,57 @@ public class TCPClient implements Runnable {
 
 	public void notifyBack() {
 		this.sendMessage("B");
+	}
+
+	public void notifyMouseMove(final int Xvalue, final int Yvalue) {
+		this.sendMessage("m " + String.valueOf(EV_MOVE) + " "
+				+ String.valueOf(Xvalue) + " " + String.valueOf(Yvalue));
+	}
+
+	public void notifyMouseButtonPress(final byte button) {
+		switch (button) {
+		case 0:
+			this.sendMessage("m " + String.valueOf(EV_BTN_LEFT_PRESS) + " 0 0");
+			break;
+		case 1:
+			this.sendMessage("m " + String.valueOf(EV_BTN_RIGHT_PRESS) + " 0 0");
+			break;
+		case 2:
+			this.sendMessage("m " + String.valueOf(EV_BTN_MIDDLE_PRESS)
+					+ " 0 0");
+			break;
+		default:
+			Log.e(TAG, "wrong button argument: " + String.valueOf(button));
+		}
+	}
+
+	public void notifyMouseButtonRelease(final byte button) {
+		switch (button) {
+		case 0:
+			this.sendMessage("m " + String.valueOf(EV_BTN_LEFT_RELEASE)
+					+ " 0 0");
+			break;
+		case 1:
+			this.sendMessage("m " + String.valueOf(EV_BTN_RIGHT_RELEASE)
+					+ " 0 0");
+			break;
+		case 2:
+			this.sendMessage("m " + String.valueOf(EV_BTN_MIDDLE_RELEASE)
+					+ " 0 0");
+			break;
+		default:
+			Log.e(TAG, "wrong button argument: " + String.valueOf(button));
+		}
+	}
+
+	public void notifyMouseHScroll(final int Xvalue) {
+		this.sendMessage("m " + String.valueOf(EV_SCROLL_HORIZ) + " "
+				+ String.valueOf(Xvalue) + " 0");
+	}
+
+	public void notifyMouseVScroll(final int Yvalue) {
+		this.sendMessage("m " + String.valueOf(EV_SCROLL_VERT) + " "
+				+ String.valueOf(Yvalue) + " 0");
 	}
 
 	// Declare the interface. The method messageReceived(String message) will

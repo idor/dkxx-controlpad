@@ -15,8 +15,6 @@ public class TouchpadActivity extends Activity implements IScartchpadClient {
 	private static final int INPUT_TYPE_TOUCH = 0;
 	private static final int INPUT_TYPE_MOUSE = 1;
 	private ScratchpadGLSurfaceView mGLView = null;
-	private TCPClient mTcpClient = null;
-	private Thread mClientThread = null;
 	private static final String TAG = "TouchpadActivity";
 	private int mHeight, mWidth;
 	private Boolean mDimensionsSentToClient = false;
@@ -36,18 +34,6 @@ public class TouchpadActivity extends Activity implements IScartchpadClient {
 		// attach the scratch pad to its view object
 		LinearLayout ln = (LinearLayout) this.findViewById(R.id.surface);
 		ln.addView(mGLView);
-
-		// connect to the server
-		mTcpClient = new TCPClient(new TCPClient.OnMessageReceived() {
-			@Override
-			// here the messageReceived method is implemented
-			public void messageReceived(String message) {
-				// this method calls the onProgressUpdate
-				Log.d(TAG, "message received from TCPClient: " + message);
-			}
-		});
-		mClientThread = new Thread(mTcpClient);
-		mClientThread.start();
 	}
 
 	@Override
@@ -93,7 +79,7 @@ public class TouchpadActivity extends Activity implements IScartchpadClient {
 	@Override
 	protected void onDestroy() {
 		try {
-			mTcpClient.stopClient();
+			TCPClient.getInstance().stopClient();
 		} catch (Exception e) {
 			Log.e(TAG, "Error when destroying activity: " + e.toString(), e);
 		} finally {
@@ -103,19 +89,7 @@ public class TouchpadActivity extends Activity implements IScartchpadClient {
 
 	public void onClick_Back(View v) {
 		try {
-			if (mTcpClient == null) {
-				throw new Exception("client does not exist");
-			}
-			if (mClientThread == null) {
-				throw new Exception("connection thread was not created yet");
-			}
-			if (mClientThread.isAlive() != true) {
-				throw new Exception("connection thread not running");
-			}
-			if (!mTcpClient.connected()) {
-				throw new Exception("client is not connected");
-			}
-			mTcpClient.notifyBack();
+			TCPClient.getInstance().notifyBack();
 		} catch (Exception e) {
 			Log.e(TAG, "Error: " + e.toString(), e);
 			e.printStackTrace();
@@ -125,20 +99,14 @@ public class TouchpadActivity extends Activity implements IScartchpadClient {
 
 	public void onClick_InputType(View v) {
 		Log.v(TAG, "input type toggle");
-		try {
-			switch (mInputType) {
-			case INPUT_TYPE_TOUCH:
-				break;
-			case INPUT_TYPE_MOUSE:
-				break;
+		switch (mInputType) {
+		case INPUT_TYPE_TOUCH:
+			break;
+		case INPUT_TYPE_MOUSE:
+			break;
 
-			default:
-				throw new Exception("input tyep unknown");
-			}
-		} catch (Exception e) {
-			Log.e(TAG, "Error: " + e.toString(), e);
-			e.printStackTrace();
-		} finally {
+		default:
+			Log.e(TAG, "input tyep unknown");
 		}
 	}
 
@@ -154,50 +122,32 @@ public class TouchpadActivity extends Activity implements IScartchpadClient {
 	}
 
 	public void handleEvent_Motion(MotionEvent event) {
-		try {
-			if (mTcpClient == null) {
-				throw new Exception("client does not exist");
-			}
-			if (mClientThread == null) {
-				throw new Exception("connection thread was not created yet");
-			}
-			if (mClientThread.isAlive() != true) {
-				throw new Exception("connection thread not running");
-			}
-			if (!mTcpClient.connected()) {
-				throw new Exception("client is not connected");
-			}
-			if (mDimensionsSentToClient != true) {
-				LinearLayout ln = (LinearLayout) this
-						.findViewById(R.id.surface);
-				mHeight = ln.getMeasuredHeight();
-				mWidth = ln.getMeasuredWidth();
-				mTcpClient.notifyDimensions(mHeight, mWidth);
-				mDimensionsSentToClient = true;
-				Log.v(TAG,
-						"dimensions received from view, height: "
-								+ String.valueOf(mHeight) + ", width: "
-								+ String.valueOf(mWidth));
-			}
-			switch (event.getAction()) {
-			case MotionEvent.ACTION_DOWN:
-				mTcpClient.notifyDown(event.getX(), event.getY(),
-						event.getPressure());
-				break;
-			case MotionEvent.ACTION_MOVE:
-				mTcpClient.notifyMove(event.getX(), event.getY(),
-						event.getPressure());
-				break;
-			case MotionEvent.ACTION_UP:
-				mTcpClient.notifyUp(event.getX(), event.getY(),
-						event.getPressure());
-				break;
-			default:
-				throw new Exception("event type not supported");
-			}
-		} catch (Exception e) {
-			Log.e(TAG, "Error: " + e.toString(), e);
-		} finally {
+		if (mDimensionsSentToClient != true) {
+			LinearLayout ln = (LinearLayout) this.findViewById(R.id.surface);
+			mHeight = ln.getMeasuredHeight();
+			mWidth = ln.getMeasuredWidth();
+			TCPClient.getInstance().notifyDimensions(mHeight, mWidth);
+			mDimensionsSentToClient = true;
+			Log.v(TAG,
+					"dimensions received from view, height: "
+							+ String.valueOf(mHeight) + ", width: "
+							+ String.valueOf(mWidth));
+		}
+		switch (event.getAction()) {
+		case MotionEvent.ACTION_DOWN:
+			TCPClient.getInstance().notifyDown(event.getX(), event.getY(),
+					event.getPressure());
+			break;
+		case MotionEvent.ACTION_MOVE:
+			TCPClient.getInstance().notifyMove(event.getX(), event.getY(),
+					event.getPressure());
+			break;
+		case MotionEvent.ACTION_UP:
+			TCPClient.getInstance().notifyUp(event.getX(), event.getY(),
+					event.getPressure());
+			break;
+		default:
+			Log.e(TAG, "event type not supported");
 		}
 	}
 }

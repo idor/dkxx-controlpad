@@ -7,5 +7,7 @@
     <string name="button_back">BACK!</string>
     <string name="button_dummy"></string>
     <string name="chk_input_type">Mouse</string>
+    <string name="title_activity_touchpad">Lumus Touchpad</string>
+    <string name="title_activity_mousepad">Lumus Mousepad</string>
 
 </resources>
