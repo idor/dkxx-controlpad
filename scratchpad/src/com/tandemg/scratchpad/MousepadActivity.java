@@ -1,17 +1,17 @@
 package com.tandemg.scratchpad;
 
-import android.app.Activity;
+import android.app.Fragment;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 
-public class MousepadActivity extends Activity {
+public class MousepadActivity extends Fragment {
 	private static final String TAG = "MousepadActivity";
 
 	private int mLastX;
@@ -20,17 +20,24 @@ public class MousepadActivity extends Activity {
 	private int mLastScrollX;
 	private int mLastScrollY;
 
+	private ViewGroup rootView;
+
+	private long timestamp;
+
+	// timeout in milliseconds to emulate left button press
+	private static final int TOUCH_LEFT_BUTTON_EMU_TIMEOUT = 100;
+
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_mousepad);
-		// keep screen on while app is running
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		// Inflate the layout containing a title and body text.
+		rootView = (ViewGroup) inflater.inflate(R.layout.activity_mousepad,
+				container, false);
 
 		mLastX = 0;
 		mLastY = 0;
 
-		View v = findViewById(R.id.touchPad);
+		View v = rootView.findViewById(R.id.touchPad);
 
 		v.setOnTouchListener(new OnTouchListener() {
 
@@ -40,7 +47,7 @@ public class MousepadActivity extends Activity {
 			}
 		});
 
-		v = findViewById(R.id.viewTouchpadScrollVertical);
+		v = rootView.findViewById(R.id.viewTouchpadScrollVertical);
 
 		v.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -49,7 +56,7 @@ public class MousepadActivity extends Activity {
 			}
 		});
 
-		v = findViewById(R.id.viewTouchpadScrollHorizontal);
+		v = rootView.findViewById(R.id.viewTouchpadScrollHorizontal);
 
 		v.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -58,7 +65,7 @@ public class MousepadActivity extends Activity {
 			}
 		});
 
-		Button button = (Button) findViewById(R.id.buttonTouchpadLMB);
+		Button button = (Button) rootView.findViewById(R.id.buttonTouchpadLMB);
 
 		button.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -68,7 +75,7 @@ public class MousepadActivity extends Activity {
 			}
 		});
 
-		button = (Button) findViewById(R.id.buttonTouchpadRMB);
+		button = (Button) rootView.findViewById(R.id.buttonTouchpadRMB);
 
 		button.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -78,7 +85,7 @@ public class MousepadActivity extends Activity {
 			}
 		});
 
-		button = (Button) findViewById(R.id.buttonTouchpadMMB);
+		button = (Button) rootView.findViewById(R.id.buttonTouchpadMMB);
 
 		button.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -88,7 +95,7 @@ public class MousepadActivity extends Activity {
 			}
 		});
 
-		Log.v(TAG, "activity created");
+		return rootView;
 	}
 
 	@Override
@@ -104,6 +111,7 @@ public class MousepadActivity extends Activity {
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
+
 		if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
 			Log.d(TAG, "orientation changed to LANDSCAPE ("
 					+ newConfig.orientation + ")");
@@ -111,13 +119,6 @@ public class MousepadActivity extends Activity {
 			Log.d(TAG, "orientation changed to PORTRAIT ("
 					+ newConfig.orientation + ")");
 		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.mousepad, menu);
-		return true;
 	}
 
 	private boolean touchpadOnTouch(final MotionEvent event) {
@@ -128,6 +129,7 @@ public class MousepadActivity extends Activity {
 		case MotionEvent.ACTION_DOWN:
 			mLastX = Math.round(event.getX());
 			mLastY = Math.round(event.getY());
+			timestamp = System.currentTimeMillis();
 			break;
 
 		case MotionEvent.ACTION_MOVE:
@@ -140,12 +142,19 @@ public class MousepadActivity extends Activity {
 			mLastX = Math.round(event.getX());
 			mLastY = Math.round(event.getY());
 			break;
+		case MotionEvent.ACTION_CANCEL:
+		case MotionEvent.ACTION_UP:
+			if (System.currentTimeMillis() - timestamp < TOUCH_LEFT_BUTTON_EMU_TIMEOUT) {
+				TCPClient.getInstance().notifyMouseButtonPressLEFT();
+				TCPClient.getInstance().notifyMouseButtonReleaseLEFT();
+			}
+			break;
 		}
 		return true;
 	}
 
 	private boolean buttonMouseOnTouch(int id, MotionEvent event, byte button) {
-		View v = findViewById(id);
+		View v = getView().findViewById(id);
 		int ev = event.getAction() & MotionEvent.ACTION_MASK;
 		if (ev == MotionEvent.ACTION_DOWN) {
 			v.setPressed(true);

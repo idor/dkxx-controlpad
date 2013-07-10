@@ -35,44 +35,4 @@
         android:orientation="horizontal" >
     </LinearLayout>
 
-    <LinearLayout
-        style="?android:attr/buttonBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="bottom"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/button_back"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClick_Back"
-            android:text="@string/button_back" />
-
-        <Button
-            android:id="@+id/button_dummy"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_dummy" />
-
-        <!--
-             <CheckBox
-            android:id="@+id/chk_input_type"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="right|center_vertical|center_horizontal"
-            android:onClick="onClick_InputType"
-            android:text="@string/chk_input_type" />
-        -->
-
-        <CheckBox
-            android:id="@+id/chk_input_type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/chk_input_type" />
-    </LinearLayout>
-
 </LinearLayout>

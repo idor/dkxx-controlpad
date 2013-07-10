@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">scratchpad</string>
+    <!-- Titles -->
+    <string name="app_name">Lumus Scratchpad</string>
     <string name="action_settings">Settings</string>
     <string name="scratchpad_view">scratchpad</string>
-    <string name="button_back">BACK!</string>
-    <string name="button_dummy"></string>
-    <string name="chk_input_type">Mouse</string>
+    <string name="button_back">BACK</string>
+    <string name="button_home">HOME</string>
     <string name="title_activity_touchpad">Lumus Touchpad</string>
     <string name="title_activity_mousepad">Lumus Mousepad</string>
+    <string name="title_activity_scratchpad">Scratchpad</string>
+
+    <!-- Actions -->
+    <string name="action_previous">Mousepad</string>
+    <string name="action_next">Touchpad</string>
 
 </resources>

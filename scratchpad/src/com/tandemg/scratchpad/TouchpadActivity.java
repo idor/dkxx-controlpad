@@ -1,16 +1,16 @@
 package com.tandemg.scratchpad;
 
-import android.app.Activity;
+import android.app.Fragment;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-public class TouchpadActivity extends Activity implements IScartchpadClient {
+public class TouchpadActivity extends Fragment implements IScartchpadClient {
 
 	private static final int INPUT_TYPE_TOUCH = 0;
 	private static final int INPUT_TYPE_MOUSE = 1;
@@ -20,31 +20,28 @@ public class TouchpadActivity extends Activity implements IScartchpadClient {
 	private Boolean mDimensionsSentToClient = false;
 	private int mInputType = INPUT_TYPE_TOUCH;
 
+	private ViewGroup rootView;
+
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_touchpad);
-		// keep screen on while app is running
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		// Inflate the layout containing a title and body text.
+		rootView = (ViewGroup) inflater.inflate(R.layout.activity_touchpad,
+				container, false);
 
 		// create scratchpad dinamiccaly
-		mGLView = new ScratchpadGLSurfaceView(this);
+		mGLView = new ScratchpadGLSurfaceView(getActivity());
 		mGLView.setClient(this);
 
 		// attach the scratch pad to its view object
-		LinearLayout ln = (LinearLayout) this.findViewById(R.id.surface);
+		LinearLayout ln = (LinearLayout) rootView.findViewById(R.id.surface);
 		ln.addView(mGLView);
+
+		return rootView;
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	@Override
-	protected void onPause() {
+	public void onPause() {
 		super.onPause();
 		// The following call pauses the rendering thread.
 		// If your OpenGL application is memory intensive,
@@ -54,7 +51,7 @@ public class TouchpadActivity extends Activity implements IScartchpadClient {
 	}
 
 	@Override
-	protected void onResume() {
+	public void onResume() {
 		super.onResume();
 		// The following call resumes a paused rendering thread.
 		// If you de-allocated) graphic objects for onPause()
@@ -77,7 +74,7 @@ public class TouchpadActivity extends Activity implements IScartchpadClient {
 	}
 
 	@Override
-	protected void onDestroy() {
+	public void onDestroy() {
 		try {
 			TCPClient.getInstance().stopClient();
 		} catch (Exception e) {
@@ -123,7 +120,8 @@ public class TouchpadActivity extends Activity implements IScartchpadClient {
 
 	public void handleEvent_Motion(MotionEvent event) {
 		if (mDimensionsSentToClient != true) {
-			LinearLayout ln = (LinearLayout) this.findViewById(R.id.surface);
+			LinearLayout ln = (LinearLayout) rootView
+					.findViewById(R.id.surface);
 			mHeight = ln.getMeasuredHeight();
 			mWidth = ln.getMeasuredWidth();
 			TCPClient.getInstance().notifyDimensions(mHeight, mWidth);

@@ -272,9 +272,29 @@ public class TCPClient implements Runnable {
 		this.sendMessage("B");
 	}
 
+	public void notifyHome() {
+		this.sendMessage("H");
+	}
+
 	public void notifyMouseMove(final int Xvalue, final int Yvalue) {
 		this.sendMessage("m " + String.valueOf(EV_MOVE) + " "
 				+ String.valueOf(Xvalue) + " " + String.valueOf(Yvalue));
+	}
+
+	public void notifyMouseButtonPressLEFT() {
+		this.sendMessage("m " + String.valueOf(EV_BTN_LEFT_PRESS) + " 0 0");
+	}
+
+	public void notifyMouseButtonReleaseLEFT() {
+		this.sendMessage("m " + String.valueOf(EV_BTN_LEFT_RELEASE) + " 0 0");
+	}
+
+	public void notifyMouseButtonPressRIGHT() {
+		this.sendMessage("m " + String.valueOf(EV_BTN_RIGHT_PRESS) + " 0 0");
+	}
+
+	public void notifyMouseButtonReleaseRIGHT() {
+		this.sendMessage("m " + String.valueOf(EV_BTN_RIGHT_RELEASE) + " 0 0");
 	}
 
 	public void notifyMouseButtonPress(final byte button) {
