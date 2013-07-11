@@ -13,7 +13,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/viewTouchpadScrollHorizontal"
-        android:layout_toLeftOf="@+id/viewTouchpadScrollVertical" />
+        android:layout_toLeftOf="@+id/viewTouchpadScrollVertical"
+        android:background="@drawable/black" />
 
     <Button
         android:id="@+id/buttonTouchpadRMB"
@@ -27,8 +28,8 @@
 
     <Button
         android:id="@+id/buttonTouchpadMMB"
-        android:layout_width="75dp"
-        android:layout_height="70dp"
+        android:layout_width="35dp"
+        android:layout_height="30dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:text="" />
@@ -45,18 +46,20 @@
 
     <View
         android:id="@+id/viewTouchpadScrollVertical"
-        android:layout_width="50dp"
+        android:layout_width="30dp"
         android:layout_height="wrap_content"
         android:layout_above="@+id/viewTouchpadScrollHorizontal"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:background="@drawable/scrollbar_black" />
 
     <View
         android:id="@+id/viewTouchpadScrollHorizontal"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="30dp"
         android:layout_above="@+id/buttonTouchpadMMB"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/scrollbar_black" />
 
     <View
         android:id="@+id/viewTouchpadOverlay"

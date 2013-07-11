@@ -13,26 +13,9 @@
     <LinearLayout
         android:id="@+id/surface"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="0.39"
+        android:layout_height="match_parent"
         android:gravity="center|top"
         android:orientation="vertical" >
-    </LinearLayout>
-
-    <LinearLayout
-        style="?android:attr/buttonBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center|bottom"
-        android:orientation="horizontal" >
-    </LinearLayout>
-
-    <LinearLayout
-        style="?android:attr/buttonBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center|bottom"
-        android:orientation="horizontal" >
     </LinearLayout>
 
 </LinearLayout>
