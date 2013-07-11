@@ -23,5 +23,6 @@
         used for programmatically-instantiated action bar items, they
         are defined here.
     -->
+    <item name="notification_bar" type="id"/>
 
 </resources>

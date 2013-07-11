@@ -15,4 +15,12 @@
     <string name="action_previous">Mousepad</string>
     <string name="action_next">Touchpad</string>
 
+    <!-- PD40 TCP Client Service -->
+    <string name="pd40tcp_service_label">PD40 Connection Service</string>
+    <string name="pd40tcp_service_started">Started</string>
+    <string name="pd40tcp_service_searching">Searching</string>
+    <string name="pd40tcp_service_connected">Connected</string>
+    <string name="pd40tcp_service_disconnected">Disconnected</string>
+    <string name="pd40tcp_service_stopped">Stopped</string>
+
 </resources>

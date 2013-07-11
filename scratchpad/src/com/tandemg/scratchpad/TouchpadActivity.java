@@ -1,5 +1,7 @@
 package com.tandemg.scratchpad;
 
+import com.tandemg.scratchpad.communications.TCPClient;
+
 import android.app.Fragment;
 import android.content.res.Configuration;
 import android.os.Bundle;

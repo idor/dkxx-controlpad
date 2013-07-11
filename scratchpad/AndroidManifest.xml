@@ -25,6 +25,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name="com.tandemg.scratchpad.communications.PD40TcpClientService"
+            android:enabled="true"
+            android:exported="false"
+            android:singleUser="true"
+            android:stopWithTask="true" >
+        </service>
     </application>
 
 </manifest>

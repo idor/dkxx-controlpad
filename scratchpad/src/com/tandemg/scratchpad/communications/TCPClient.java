@@ -1,4 +1,4 @@
-package com.tandemg.scratchpad;
+package com.tandemg.scratchpad.communications;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
