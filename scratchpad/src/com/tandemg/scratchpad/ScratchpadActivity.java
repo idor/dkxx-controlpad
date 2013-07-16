@@ -2,9 +2,13 @@ package com.tandemg.scratchpad;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
@@ -16,7 +20,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.tandemg.scratchpad.communications.PD40TcpClientService;
-import com.tandemg.scratchpad.communications.TCPClient;
+import com.tandemg.scratchpad.communications.PD40TcpClientService.PD40TcpClientServiceBinder;
 
 public class ScratchpadActivity extends FragmentActivity {
 
@@ -25,9 +29,9 @@ public class ScratchpadActivity extends FragmentActivity {
 	private Fragment touch = new TouchpadActivity();
 	private Fragment mouse = new MousepadActivity();
 
-	public ScratchpadActivity() {
-		Log.v(TAG, "ScratchpadActivity object created");
-	}
+	boolean mBound = false;
+	private ServiceConnection mConnection;
+	private PD40TcpClientService mService = null;
 
 	/**
 	 * The pager widget, which handles animation and allows swiping horizontally
@@ -40,10 +44,36 @@ public class ScratchpadActivity extends FragmentActivity {
 	 */
 	private PagerAdapter mPagerAdapter;
 
+	public ScratchpadActivity() {
+		mConnection = new ServiceConnection() {
+
+			@Override
+			public void onServiceConnected(ComponentName className,
+					IBinder service) {
+				// We've bound to LocalService, cast the IBinder and get
+				// LocalService instance
+				PD40TcpClientServiceBinder binder = (PD40TcpClientServiceBinder) service;
+				mService = binder.getService();
+				mBound = true;
+			}
+
+			@Override
+			public void onServiceDisconnected(ComponentName arg0) {
+				mBound = false;
+				mService = null;
+			}
+		};
+		Log.v(TAG, "ScratchpadActivity object created");
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_scratchpad);
+
+		Intent intent = new Intent(this, PD40TcpClientService.class);
+		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
 		// Show the Up button in the action bar.
 		setupActionBar();
 
@@ -68,8 +98,10 @@ public class ScratchpadActivity extends FragmentActivity {
 				invalidateOptionsMenu();
 			}
 		});
-		startService(new Intent(ScratchpadActivity.this,
-				PD40TcpClientService.class));
+		/*
+		 * service = startService(new Intent(ScratchpadActivity.this,
+		 * PD40TcpClientService.class));
+		 */
 	}
 
 	@Override
@@ -77,6 +109,19 @@ public class ScratchpadActivity extends FragmentActivity {
 		stopService(new Intent(ScratchpadActivity.this,
 				PD40TcpClientService.class));
 		super.onDestroy();
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		if (mBound) {
+			unbindService(mConnection);
+		}
 	}
 
 	/**
@@ -144,7 +189,7 @@ public class ScratchpadActivity extends FragmentActivity {
 
 	public void onClick_Back(View v) {
 		try {
-			TCPClient.getInstance().notifyBack();
+			mService.notifyBack();
 		} catch (Exception e) {
 			Log.e(TAG, "Error: " + e.toString(), e);
 			e.printStackTrace();
@@ -154,7 +199,7 @@ public class ScratchpadActivity extends FragmentActivity {
 
 	public void onClick_Home(View v) {
 		try {
-			TCPClient.getInstance().notifyHome();
+			mService.notifyHome();
 		} catch (Exception e) {
 			Log.e(TAG, "Error: " + e.toString(), e);
 			e.printStackTrace();
@@ -175,7 +220,6 @@ public class ScratchpadActivity extends FragmentActivity {
 
 		@Override
 		public Fragment getItem(int position) {
-			Log.d(TAG, "get item #" + String.valueOf(position));
 			if (position == 0) {
 				if (mouse == null) {
 					Log.d(TAG, "mouse was null");
@@ -194,6 +238,12 @@ public class ScratchpadActivity extends FragmentActivity {
 		@Override
 		public int getCount() {
 			return 2;
+		}
+	}
+
+	public PD40TcpClientService getTcpService() {
+		synchronized (this) {
+			return mService;
 		}
 	}
 }

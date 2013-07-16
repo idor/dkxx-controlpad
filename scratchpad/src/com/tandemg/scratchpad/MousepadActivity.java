@@ -1,7 +1,5 @@
 package com.tandemg.scratchpad;
 
-import com.tandemg.scratchpad.communications.TCPClient;
-
 import android.app.Fragment;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -140,15 +138,18 @@ public class MousepadActivity extends Fragment {
 			Xvalue = Math.round((Xvalue * 3) / 2);
 			Yvalue = Math.round((Yvalue * 3) / 2);
 
-			TCPClient.getInstance().notifyMouseMove(Xvalue, Yvalue);
+			((ScratchpadActivity) getActivity()).getTcpService()
+					.notifyMouseMove(Xvalue, Yvalue);
 			mLastX = Math.round(event.getX());
 			mLastY = Math.round(event.getY());
 			break;
 		case MotionEvent.ACTION_CANCEL:
 		case MotionEvent.ACTION_UP:
 			if (System.currentTimeMillis() - timestamp < TOUCH_LEFT_BUTTON_EMU_TIMEOUT) {
-				TCPClient.getInstance().notifyMouseButtonPressLEFT();
-				TCPClient.getInstance().notifyMouseButtonReleaseLEFT();
+				((ScratchpadActivity) getActivity()).getTcpService()
+						.notifyMouseButtonPressLEFT();
+				((ScratchpadActivity) getActivity()).getTcpService()
+						.notifyMouseButtonReleaseLEFT();
 			}
 			break;
 		}
@@ -160,9 +161,11 @@ public class MousepadActivity extends Fragment {
 		int ev = event.getAction() & MotionEvent.ACTION_MASK;
 		if (ev == MotionEvent.ACTION_DOWN) {
 			v.setPressed(true);
-			TCPClient.getInstance().notifyMouseButtonPress(button);
+			((ScratchpadActivity) getActivity()).getTcpService()
+					.notifyMouseButtonPress(button);
 		} else if (ev == MotionEvent.ACTION_UP) {
-			TCPClient.getInstance().notifyMouseButtonRelease(button);
+			((ScratchpadActivity) getActivity()).getTcpService()
+					.notifyMouseButtonRelease(button);
 			v.setPressed(false);
 		}
 		return true;
@@ -180,7 +183,8 @@ public class MousepadActivity extends Fragment {
 			Yvalue = Math.round(event.getY()) - mLastScrollY;
 			Yvalue = -Math.round(Yvalue / 3);
 
-			TCPClient.getInstance().notifyMouseVScroll(Yvalue);
+			((ScratchpadActivity) getActivity()).getTcpService()
+					.notifyMouseVScroll(Yvalue);
 			mLastScrollY = Math.round(event.getY());
 			break;
 		}
@@ -199,7 +203,8 @@ public class MousepadActivity extends Fragment {
 			Xvalue = Math.round(event.getX()) - mLastScrollX;
 			Xvalue = Math.round(Xvalue / 3);
 
-			TCPClient.getInstance().notifyMouseHScroll(Xvalue);
+			((ScratchpadActivity) getActivity()).getTcpService()
+					.notifyMouseHScroll(Xvalue);
 			mLastScrollX = Math.round(event.getX());
 			break;
 		}

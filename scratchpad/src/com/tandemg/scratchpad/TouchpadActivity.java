@@ -1,7 +1,5 @@
 package com.tandemg.scratchpad;
 
-import com.tandemg.scratchpad.communications.TCPClient;
-
 import android.app.Fragment;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -77,23 +75,7 @@ public class TouchpadActivity extends Fragment implements IScartchpadClient {
 
 	@Override
 	public void onDestroy() {
-		try {
-			TCPClient.getInstance().stopClient();
-		} catch (Exception e) {
-			Log.e(TAG, "Error when destroying activity: " + e.toString(), e);
-		} finally {
-			super.onDestroy();
-		}
-	}
-
-	public void onClick_Back(View v) {
-		try {
-			TCPClient.getInstance().notifyBack();
-		} catch (Exception e) {
-			Log.e(TAG, "Error: " + e.toString(), e);
-			e.printStackTrace();
-		} finally {
-		}
+		super.onDestroy();
 	}
 
 	public void onClick_InputType(View v) {
@@ -126,7 +108,8 @@ public class TouchpadActivity extends Fragment implements IScartchpadClient {
 					.findViewById(R.id.surface);
 			mHeight = ln.getMeasuredHeight();
 			mWidth = ln.getMeasuredWidth();
-			TCPClient.getInstance().notifyDimensions(mHeight, mWidth);
+			((ScratchpadActivity) getActivity()).getTcpService()
+					.notifyDimensions(mHeight, mWidth);
 			mDimensionsSentToClient = true;
 			Log.v(TAG,
 					"dimensions received from view, height: "
@@ -135,16 +118,20 @@ public class TouchpadActivity extends Fragment implements IScartchpadClient {
 		}
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
-			TCPClient.getInstance().notifyDown(event.getX(), event.getY(),
-					event.getPressure());
+			((ScratchpadActivity) getActivity()).getTcpService().notifyDown(
+					event.getX(), event.getY(), event.getPressure());
 			break;
 		case MotionEvent.ACTION_MOVE:
-			TCPClient.getInstance().notifyMove(event.getX(), event.getY(),
-					event.getPressure());
+			((ScratchpadActivity) getActivity()).getTcpService().notifyMove(
+					event.getX(), event.getY(), event.getPressure());
 			break;
 		case MotionEvent.ACTION_UP:
-			TCPClient.getInstance().notifyUp(event.getX(), event.getY(),
-					event.getPressure());
+			((ScratchpadActivity) getActivity()).getTcpService().notifyUp(
+					event.getX(), event.getY(), event.getPressure());
+			break;
+		case MotionEvent.ACTION_CANCEL:
+			((ScratchpadActivity) getActivity()).getTcpService().notifyCancel(
+					event.getX(), event.getY(), event.getPressure());
 			break;
 		default:
 			Log.e(TAG, "event type not supported");
