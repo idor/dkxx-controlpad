@@ -64,10 +64,10 @@ public class TouchpadActivity extends Fragment implements IScartchpadClient {
 		super.onConfigurationChanged(newConfig);
 
 		if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-			Log.d(TAG, "orientation changed to LANDSCAPE ("
+			Log.v(TAG, "orientation changed to LANDSCAPE ("
 					+ newConfig.orientation + ")");
 		} else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-			Log.d(TAG, "orientation changed to PORTRAIT ("
+			Log.v(TAG, "orientation changed to PORTRAIT ("
 					+ newConfig.orientation + ")");
 		}
 		mDimensionsSentToClient = false;
