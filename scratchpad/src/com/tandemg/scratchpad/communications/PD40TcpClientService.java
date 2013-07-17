@@ -37,6 +37,9 @@ public class PD40TcpClientService extends Service {
 	private static final int DISCONNECT_TIMEOUT = 5000;
 	private static final int SOCKET_READ_TIMEOUT_MS = 500;
 	private static final int SERVICE_THREAD_SLEEP_TIMEOUT = 5000;
+	private static final int SERVICE_THREAD_PING_ERROR_TIMEOUT = 1000;
+	private static final int SERVICE_THREAD_CONNECT_ERROR_TIMEOUT = 2500;
+	private static final int SERVICE_THREAD_START_LISTENER_ERROR_TIMEOUT = 500;
 
 	private Object lock = null;
 	private boolean connected = false;
@@ -149,7 +152,6 @@ public class PD40TcpClientService extends Service {
 
 	protected Vector<String> listAvailableIps() {
 		Vector<String> ret = new Vector<String>();
-		showNotificationSearching();
 		// TODO: search network here
 		return ret;
 	}
@@ -175,29 +177,39 @@ public class PD40TcpClientService extends Service {
 							if (!mServiceRunning)
 								break;
 						}
+						showNotificationSearching();
 						String ip = availableIps.get(i);
+						if (ip == null) {
+							Log.e(TAG, "invalid available ip list");
+							continue;
+						}
 						if (!ping(ip)) {
 							Log.e(TAG, "ping failed to: " + ip);
+							sleep(SERVICE_THREAD_PING_ERROR_TIMEOUT);
 							continue;
 						}
 						if (!connect(ip, SERVER_DEFAULT_PORT)) {
 							Log.e(TAG, "connection failed to: " + ip);
+							sleep(SERVICE_THREAD_CONNECT_ERROR_TIMEOUT);
 							continue;
 						}
+						showNotificationConnected();
 						if (!startListenerThread()) {
 							Log.e(TAG, "listener thread could not be started");
 							// TODO: add ip to blacklist
 							disconnect();
+							sleep(SERVICE_THREAD_START_LISTENER_ERROR_TIMEOUT);
 							continue;
 						}
 						waitListenerThread();
 						disconnect();
-						try {
-							Thread.sleep(SERVICE_THREAD_SLEEP_TIMEOUT);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+						showNotificationDisconnected();
+						boolean sleep;
+						synchronized (lock) {
+							sleep = mServiceRunning;
 						}
+						if (sleep)
+							sleep(SERVICE_THREAD_SLEEP_TIMEOUT);
 					}
 				}
 				Log.i(TAG, "service thread exited");
@@ -330,7 +342,7 @@ public class PD40TcpClientService extends Service {
 				e.printStackTrace();
 				return false;
 			} catch (IOException e) {
-				Log.e(TAG, "IOException during connection");
+				Log.e(TAG, "IOException during connection: " + e.toString());
 				e.printStackTrace();
 				return false;
 			}
@@ -345,6 +357,7 @@ public class PD40TcpClientService extends Service {
 		Log.i(TAG, "disconnecting socket");
 		synchronized (lock) {
 			try {
+				Log.d(TAG, "shutdown socket i/o");
 				if (out != null) {
 					out.close();
 					out = null;
@@ -353,6 +366,7 @@ public class PD40TcpClientService extends Service {
 					in.close();
 					in = null;
 				}
+				Log.d(TAG, "closing socket");
 				if (mSocket != null) {
 					mSocket.close();
 					mSocket = null;
@@ -416,7 +430,7 @@ public class PD40TcpClientService extends Service {
 		synchronized (lock) {
 			if (mNotificationManager == null || mNotificationBuilder == null)
 				return;
-			mNotificationBuilder.setSmallIcon(R.drawable.stat_sample);
+			mNotificationBuilder.setSmallIcon(R.drawable.ic_stat_okay);
 			mNotificationBuilder
 					.setContentText(getText(R.string.pd40tcp_service_started));
 			mNotificationManager.notify(mNotificationId,
@@ -428,7 +442,7 @@ public class PD40TcpClientService extends Service {
 		synchronized (lock) {
 			if (mNotificationManager == null || mNotificationBuilder == null)
 				return;
-			mNotificationBuilder.setSmallIcon(R.drawable.stat_neutral);
+			mNotificationBuilder.setSmallIcon(R.drawable.ic_stat_cloud);
 			mNotificationBuilder
 					.setContentText(getText(R.string.pd40tcp_service_searching));
 			mNotificationManager.notify(mNotificationId,
@@ -440,7 +454,7 @@ public class PD40TcpClientService extends Service {
 		synchronized (lock) {
 			if (mNotificationManager == null || mNotificationBuilder == null)
 				return;
-			mNotificationBuilder.setSmallIcon(R.drawable.stat_happy);
+			mNotificationBuilder.setSmallIcon(R.drawable.ic_stat_mouse);
 			mNotificationBuilder
 					.setContentText(getText(R.string.pd40tcp_service_connected));
 			mNotificationManager.notify(mNotificationId,
@@ -452,7 +466,7 @@ public class PD40TcpClientService extends Service {
 		synchronized (lock) {
 			if (mNotificationManager == null || mNotificationBuilder == null)
 				return;
-			mNotificationBuilder.setSmallIcon(R.drawable.stat_sad);
+			mNotificationBuilder.setSmallIcon(R.drawable.ic_stat_error);
 			mNotificationBuilder
 					.setContentText(getText(R.string.pd40tcp_service_disconnected));
 			mNotificationManager.notify(mNotificationId,
@@ -464,7 +478,7 @@ public class PD40TcpClientService extends Service {
 		synchronized (lock) {
 			if (mNotificationManager == null || mNotificationBuilder == null)
 				return;
-			mNotificationBuilder.setSmallIcon(R.drawable.stat_sample);
+			mNotificationBuilder.setSmallIcon(R.drawable.ic_stat_restart);
 			mNotificationBuilder
 					.setContentText(getText(R.string.pd40tcp_service_stopped));
 			mNotificationManager.notify(mNotificationId,
@@ -481,11 +495,6 @@ public class PD40TcpClientService extends Service {
 	}
 
 	private synchronized void connected(final boolean state) {
-		if (state) {
-			showNotificationConnected();
-		} else {
-			showNotificationDisconnected();
-		}
 		synchronized (lock) {
 			connected = state;
 		}
@@ -620,5 +629,14 @@ public class PD40TcpClientService extends Service {
 		this.sendMessage(MessageTypes.MSG_MOUSE_CMD + " "
 				+ String.valueOf(MessageTypes.EV_SCROLL_VERT) + " "
 				+ String.valueOf(Yvalue) + " 0");
+	}
+
+	private static void sleep(final long timeout) {
+		try {
+			Thread.sleep(timeout);
+		} catch (InterruptedException e) {
+			Log.e(TAG, "tcp service thread sleep interrupted");
+			e.printStackTrace();
+		}
 	}
 }
