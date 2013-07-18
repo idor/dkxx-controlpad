@@ -88,20 +88,13 @@ public class ScratchpadActivity extends FragmentActivity {
 			@Override
 			public void onPageSelected(int position) {
 				// When changing pages, reset the action bar actions since they
-				// are dependent
-				// on which page is currently active. An alternative approach is
-				// to have each
-				// fragment expose actions itself (rather than the activity
-				// exposing actions),
-				// but for simplicity, the activity provides the actions in this
-				// sample.
+				// are dependent on which page is currently active. An alternative
+				// approach is to have each fragment expose actions itself (rather
+				// than the activity exposing actions), but for simplicity, the 
+				// activity provides the actions in this sample.
 				invalidateOptionsMenu();
 			}
 		});
-		/*
-		 * service = startService(new Intent(ScratchpadActivity.this,
-		 * PD40TcpClientService.class));
-		 */
 	}
 
 	@Override
@@ -150,23 +143,21 @@ public class ScratchpadActivity extends FragmentActivity {
 		switch (item.getItemId()) {
 		/*
 		 * case android.R.id.home: // Navigate "up" the demo structure to the
-		 * launchpad activity. // See
-		 * http://developer.android.com/design/patterns/navigation.html // for
-		 * more. NavUtils.navigateUpTo(this, new Intent(this,
+		 * launchpad activity.
+		 * See http://developer.android.com/design/patterns/navigation.html
+		 * for more. NavUtils.navigateUpTo(this, new Intent(this,
 		 * MainActivity.class)); return true;
 		 */
 
 		case R.id.action_previous:
 			// Go to the previous step in the wizard. If there is no previous
-			// step,
-			// setCurrentItem will do nothing.
+			// step, setCurrentItem will do nothing.
 			mPager.setCurrentItem(mPager.getCurrentItem() - 1);
 			return true;
 
 		case R.id.action_next:
 			// Advance to the next step in the wizard. If there is no next step,
-			// setCurrentItem
-			// will do nothing.
+			// setCurrentItem will do nothing.
 			mPager.setCurrentItem(mPager.getCurrentItem() + 1);
 			return true;
 		}
