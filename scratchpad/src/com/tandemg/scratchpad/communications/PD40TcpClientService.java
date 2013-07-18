@@ -322,7 +322,6 @@ public class PD40TcpClientService extends Service {
 				InetSocketAddress addr = new InetSocketAddress(serverAddr, port);
 				mSocket = new Socket();
 				mSocket.setKeepAlive(true);
-				mSocket.setSoTimeout(SOCKET_READ_TIMEOUT_MS);
 				mSocket.setTcpNoDelay(true);
 				mSocket.connect(addr, CONNECT_TIMEOUT);
 				setServerSettings(ip, port);
