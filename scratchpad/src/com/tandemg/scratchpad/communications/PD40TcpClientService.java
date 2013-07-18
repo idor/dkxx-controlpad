@@ -244,8 +244,14 @@ public class PD40TcpClientService extends Service {
 						} catch (SocketTimeoutException e) {
 							continue;
 						} catch (IOException e) {
-							Log.e(TAG,
-									"IO Exception during read: " + e.toString());
+							if (connected()) {
+								Log.e(TAG,
+										"IO Exception during read: "
+												+ e.toString());
+							} else {
+								Log.d(TAG,
+										"socket closed during read, breaking");
+							}
 							continue;
 						}
 						if (n < 0) {
