@@ -67,6 +67,8 @@ public class PD40TcpClientService extends Service {
 	private boolean mServiceRunning = false;
 	private boolean mSocketListenrRunning = false;
 
+	protected int mIconConnected = R.drawable.ic_stat_mouse;
+
 	/**
 	 * Class for clients to access. Because we know this service always runs in
 	 * the same process as its clients, we don't need to deal with IPC.
@@ -389,6 +391,17 @@ public class PD40TcpClientService extends Service {
 			}
 		}
 	}
+	
+	public synchronized void setIconConnected(int icon) {
+		mIconConnected = icon;
+		if(getListenerRunning())
+			showNotificationConnected();
+			
+	}
+	
+	public synchronized int getIconConnected() {
+		return mIconConnected;
+	}
 
 	/**
 	 * Show a notification while this service is running.
@@ -445,7 +458,7 @@ public class PD40TcpClientService extends Service {
 		synchronized (this) {
 			if (mNotificationManager == null || mNotificationBuilder == null)
 				return;
-			mNotificationBuilder.setSmallIcon(R.drawable.ic_stat_mouse);
+			mNotificationBuilder.setSmallIcon(mIconConnected);
 			mNotificationBuilder
 					.setContentText(getText(R.string.pd40tcp_service_connected));
 			mNotificationManager.notify(mNotificationId,

@@ -171,12 +171,14 @@ public class ScratchpadActivity extends FragmentActivity {
 			// Go to the previous step in the wizard. If there is no previous
 			// step, setCurrentItem will do nothing.
 			mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+			mService.setIconConnected(R.drawable.ic_stat_mouse);
 			return true;
 
 		case R.id.action_next:
 			// Advance to the next step in the wizard. If there is no next step,
 			// setCurrentItem will do nothing.
 			mPager.setCurrentItem(mPager.getCurrentItem() + 1);
+			mService.setIconConnected(R.drawable.ic_stat_droid);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
