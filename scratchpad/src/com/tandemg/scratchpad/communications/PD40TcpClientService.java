@@ -161,9 +161,7 @@ public class PD40TcpClientService extends Service {
 		mClientThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (true) {
-					if (!serviceRunning())
-						break;
+				while (serviceRunning()) {
 					Vector<String> availableIps = listAvailableIps();
 					if (availableIps.size() == 0) {
 						availableIps.add(SERVER_DEFAULT_IP);
@@ -174,7 +172,9 @@ public class PD40TcpClientService extends Service {
 						showNotificationSearching();
 						String ip = availableIps.get(i);
 						if (ip == null) {
-							Log.e(TAG, "invalid available ip list");
+							Log.e(TAG,
+									"invalid ip in list item "
+											+ String.valueOf(i));
 							continue;
 						}
 						if (!ping(ip)) {
@@ -237,9 +237,7 @@ public class PD40TcpClientService extends Service {
 				@Override
 				public void run() {
 					char arr[] = new char[256];
-					while (connected()) {
-						if (!socketListenerRunning())
-							break;
+					while (socketListenerRunning() && connected()) {
 						int n;
 						try {
 							n = in.read(arr, 0, 256);
