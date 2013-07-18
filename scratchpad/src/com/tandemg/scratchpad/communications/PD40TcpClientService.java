@@ -6,6 +6,7 @@ import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -29,7 +30,9 @@ import com.tandemg.scratchpad.ScratchpadActivity;
 
 public class PD40TcpClientService extends Service {
 
-	private static final String TAG = "PD40TcpClientService";
+	private static final String TAG = "scratchpad tcp service";
+	private static final String ST_TAG = "scratchpad service thread";
+	private static final String LT_TAG = "scratchpad listener thread";
 	private static final int PING_TIMEOUT = 1000;
 	private static final String SERVER_DEFAULT_IP = "192.168.43.140";
 	private static final int SERVER_DEFAULT_PORT = 2301;
@@ -155,41 +158,40 @@ public class PD40TcpClientService extends Service {
 	}
 
 	protected boolean startServiceThread() {
-		synchronized (this) {
-			mServiceRunning = true;
-		}
-		mClientThread = new Thread(new Runnable() {
+		if (serviceThreadRunning())
+			return false;
+		setServiceThread(new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (serviceRunning()) {
+				Log.d(ST_TAG, "service thread started");
+				setServiceRunning(true);
+				while (serviceThreadRunning()) {
 					Vector<String> availableIps = listAvailableIps();
 					if (availableIps.size() == 0) {
 						availableIps.add(SERVER_DEFAULT_IP);
 					}
 					for (int i = 0; i < availableIps.size(); i++) {
-						if (!serviceRunning())
+						if (!serviceThreadRunning())
 							break;
 						showNotificationSearching();
 						String ip = availableIps.get(i);
 						if (ip == null) {
-							Log.e(TAG,
-									"invalid ip in list item "
-											+ String.valueOf(i));
+							Log.e(ST_TAG, "invalid ip");
 							continue;
 						}
 						if (!ping(ip)) {
-							Log.e(TAG, "ping failed to: " + ip);
+							Log.e(ST_TAG, "ping failed to: " + ip);
 							sleep(SERVICE_THREAD_PING_ERROR_TIMEOUT);
 							continue;
 						}
 						if (!connect(ip, SERVER_DEFAULT_PORT)) {
-							Log.e(TAG, "connection failed to: " + ip);
+							Log.e(ST_TAG, "connection failed to: " + ip);
 							sleep(SERVICE_THREAD_CONNECT_ERROR_TIMEOUT);
 							continue;
 						}
 						showNotificationConnected();
 						if (!startListenerThread()) {
-							Log.e(TAG, "listener thread could not be started");
+							Log.e(ST_TAG, "listener thread failed to start");
 							// TODO: add ip to blacklist
 							disconnect();
 							sleep(SERVICE_THREAD_START_LISTENER_ERROR_TIMEOUT);
@@ -198,22 +200,22 @@ public class PD40TcpClientService extends Service {
 						waitListenerThread();
 						disconnect();
 						showNotificationDisconnected();
-						if (serviceRunning())
+						if (serviceThreadRunning())
 							sleep(SERVICE_THREAD_SLEEP_TIMEOUT);
 					}
 				}
-				Log.i(TAG, "service thread exited");
+				Log.d(ST_TAG, "service thread exited");
+				setServiceRunning(false);
 			}
-		});
-		mClientThread.start();
+		}));
+		getServiceThread().start();
 		return true;
 	}
 
 	protected void stopServiceThread() {
-		synchronized (this) {
-			mServiceRunning = false;
-			mSocketListenrRunning = false;
-		}
+		if (!serviceThreadRunning())
+			return;
+		setServiceRunning(false);
 		stopListenerThread();
 		disconnect(); // just in case
 		if (mClientThread.isAlive()) {
@@ -231,86 +233,82 @@ public class PD40TcpClientService extends Service {
 	protected boolean startListenerThread() {
 		if (!connected())
 			return false;
-		synchronized (this) {
-			mSocketListenrRunning = true;
-			mSocketListenerThread = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					char arr[] = new char[256];
-					while (socketListenerRunning() && connected()) {
-						int n;
-						try {
-							n = in.read(arr, 0, 256);
-						} catch (SocketTimeoutException e) {
-							continue;
-						} catch (IOException e) {
-							if (connected()) {
-								Log.e(TAG,
-										"IO Exception during read: "
-												+ e.toString());
-							} else {
-								Log.d(TAG,
-										"socket closed during read, breaking");
-							}
-							continue;
-						}
-						if (n < 0) {
-							Log.e(TAG,
-									"socket read returned with error, result: "
-											+ String.valueOf(n));
-							Log.i(TAG,
-									"assuming socket closed on the other hand, break listener");
-							break;
-						}
-						String msg = String.copyValueOf(arr, 0, n);
-						if (msg != null) {
-							// notify listeners
-							Log.v(TAG, "message received: " + msg);
-							notifyHandlers(msg);
-						}
+		setListenerRunning(true);
+		setListenerThread(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Log.d(LT_TAG, "listener thread started");
+				char arr[] = new char[256];
+				while (getListenerRunning() && connected()) {
+					int n;
+					/*
+					 * break out for any exception that is not SocketTimeout the
+					 * service thread is responsible to restart the thread
+					 */
+					try {
+						n = in.read(arr, 0, 256);
+					} catch (SocketTimeoutException e) {
+						continue;
+					} catch (SocketException e) {
+						Log.e(LT_TAG, "read socket exception: " + e.toString());
+						break;
+					} catch (IOException e) {
+						Log.e(LT_TAG, "read i/o exception: " + e.toString());
+						break;
 					}
-					Log.i(TAG, "listener thread exited");
+					if (n < 0) {
+						Log.e(LT_TAG,
+								"read error, result: " + String.valueOf(n));
+						Log.i(LT_TAG, "assuming socket closed, break listener");
+						break;
+					}
+					String msg = String.copyValueOf(arr, 0, n);
+					if (msg != null) {
+						// notify listeners
+						Log.v(LT_TAG, "message received: " + msg);
+						notifyHandlers(msg);
+					}
 				}
-			});
-			mSocketListenerThread.start();
-			return true;
-		}
+				Log.d(LT_TAG, "listener thread exited");
+				setListenerRunning(false);
+			}
+		}));
+		getListenerThread().start();
+		return true;
 	}
 
 	protected void waitListenerThread() {
-		if (mSocketListenerThread.isAlive()) {
-			try {
-				Log.i(TAG, "waiting on listener thread (wait)");
-				mSocketListenerThread.join();
-				Log.i(TAG, "listener thread joined (during wait)");
-			} catch (InterruptedException e) {
-				Log.e(TAG, "waitListenerThread interrupted");
-				e.printStackTrace();
-			}
+		if (!socketListenerThreadRunning())
+			return;
+		try {
+			Thread t = getListenerThread();
+			Log.i(TAG, "waiting on listener thread (wait)");
+			t.join();
+			Log.i(TAG, "listener thread joined (during wait)");
+		} catch (InterruptedException e) {
+			Log.e(TAG, "waitListenerThread interrupted");
+			e.printStackTrace();
 		}
 	}
 
 	protected void stopListenerThread() {
-		synchronized (this) {
-			mSocketListenrRunning = false;
-			if (mSocketListenerThread == null)
-				return;
-		}
-		if (mSocketListenerThread.isAlive()) {
-			/*
-			 * closing the socket (using disconnect) will cause an exception on
-			 * the reader, thus breaking the read blocking function regardless
-			 * of its timeout
-			 */
-			disconnect();
-			try {
-				Log.i(TAG, "waiting on listener thread (stop)");
-				mSocketListenerThread.join(DISCONNECT_TIMEOUT);
-				Log.i(TAG, "listener thread joined (during stop)");
-			} catch (InterruptedException e) {
-				Log.e(TAG, "waitListenerThread interrupted");
-				e.printStackTrace();
-			}
+		setListenerRunning(false);
+		if (!socketListenerThreadRunning())
+			return;
+		/*
+		 * closing the socket (using disconnect) will cause an exception on the
+		 * reader, thus breaking the read blocking function regardless of its
+		 * timeout
+		 */
+		disconnect();
+		try {
+			Thread t = getListenerThread();
+			Log.i(TAG, "waiting on listener thread (stop)");
+			t.join(DISCONNECT_TIMEOUT);
+			Log.i(TAG, "listener thread joined (during stop)");
+		} catch (InterruptedException e) {
+			Log.e(TAG, "waitListenerThread interrupted");
+			e.printStackTrace();
 		}
 	}
 
@@ -502,12 +500,46 @@ public class PD40TcpClientService extends Service {
 		return serverPort;
 	}
 
-	protected synchronized boolean serviceRunning() {
+	protected synchronized Thread getServiceThread() {
+		return mClientThread;
+	}
+
+	protected synchronized void setServiceThread(Thread t) {
+		mClientThread = t;
+	}
+
+	protected synchronized Thread getListenerThread() {
+		return mSocketListenerThread;
+	}
+
+	protected synchronized void setListenerThread(Thread t) {
+		mSocketListenerThread = t;
+	}
+
+	protected synchronized boolean getServiceRunning() {
 		return mServiceRunning;
 	}
 
-	protected synchronized boolean socketListenerRunning() {
+	protected synchronized void setServiceRunning(boolean s) {
+		mServiceRunning = s;
+	}
+
+	protected synchronized boolean getListenerRunning() {
 		return mSocketListenrRunning;
+	}
+
+	protected synchronized void setListenerRunning(boolean s) {
+		mSocketListenrRunning = s;
+	}
+
+	protected synchronized boolean serviceThreadRunning() {
+		Thread t = getServiceThread();
+		return (mServiceRunning && (t != null) && t.isAlive());
+	}
+
+	protected synchronized boolean socketListenerThreadRunning() {
+		Thread t = getListenerThread();
+		return (mSocketListenrRunning && (t != null) && t.isAlive());
 	}
 
 	private static void sleep(final long timeout) {
