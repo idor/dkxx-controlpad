@@ -25,7 +25,7 @@ public class MousepadActivity extends Fragment {
 	private long timestamp;
 
 	// timeout in milliseconds to emulate left button press
-	private static final int TOUCH_LEFT_BUTTON_EMU_TIMEOUT = 100;
+	private static final int TOUCH_LEFT_BUTTON_EMU_TIMEOUT = 50;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
