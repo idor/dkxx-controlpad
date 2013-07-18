@@ -88,10 +88,10 @@ public class ScratchpadActivity extends FragmentActivity {
 			@Override
 			public void onPageSelected(int position) {
 				// When changing pages, reset the action bar actions since they
-				// are dependent on which page is currently active. An alternative
-				// approach is to have each fragment expose actions itself (rather
-				// than the activity exposing actions), but for simplicity, the 
-				// activity provides the actions in this sample.
+				// are dependent on which page is currently active. An
+				// alternative approach is to have each fragment expose actions
+				// itself (rather than the activity exposing actions), but for
+				// simplicity, the activity provides the actions in this sample.
 				invalidateOptionsMenu();
 			}
 		});
@@ -99,31 +99,49 @@ public class ScratchpadActivity extends FragmentActivity {
 
 	@Override
 	public void onDestroy() {
-		stopService(new Intent(ScratchpadActivity.this,
-				PD40TcpClientService.class));
+		if (mBound) {
+			unbindService(mConnection);
+		}
 		super.onDestroy();
 	}
 
 	@Override
 	protected void onStart() {
+		Log.d(TAG, "start");
 		super.onStart();
 	}
 
 	@Override
 	protected void onStop() {
+		Log.d(TAG, "stop");
 		super.onStop();
-		if (mBound) {
-			unbindService(mConnection);
-		}
 	}
 
-	/**
-	 * Set up the {@link android.app.ActionBar}.
-	 */
 	private void setupActionBar() {
-
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+	}
 
+	@Override
+	protected void onPause() {
+		Log.d(TAG, "pause");
+		super.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		Log.d(TAG, "resume");
+		super.onResume();
+	}
+
+	@Override
+	protected void onRestart() {
+		Log.d(TAG, "restart");
+		super.onRestart();
+	}
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
 	}
 
 	@Override
@@ -143,9 +161,9 @@ public class ScratchpadActivity extends FragmentActivity {
 		switch (item.getItemId()) {
 		/*
 		 * case android.R.id.home: // Navigate "up" the demo structure to the
-		 * launchpad activity.
-		 * See http://developer.android.com/design/patterns/navigation.html
-		 * for more. NavUtils.navigateUpTo(this, new Intent(this,
+		 * launchpad activity. See
+		 * http://developer.android.com/design/patterns/navigation.html for
+		 * more. NavUtils.navigateUpTo(this, new Intent(this,
 		 * MainActivity.class)); return true;
 		 */
 
@@ -161,7 +179,6 @@ public class ScratchpadActivity extends FragmentActivity {
 			mPager.setCurrentItem(mPager.getCurrentItem() + 1);
 			return true;
 		}
-
 		return super.onOptionsItemSelected(item);
 	}
 
