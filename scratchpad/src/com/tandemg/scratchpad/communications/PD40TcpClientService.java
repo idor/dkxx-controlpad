@@ -38,7 +38,6 @@ public class PD40TcpClientService extends Service {
 	private static final int SERVER_DEFAULT_PORT = 2301;
 	private static final int CONNECT_TIMEOUT = 5000;
 	private static final int DISCONNECT_TIMEOUT = 5000;
-	private static final int SOCKET_READ_TIMEOUT_MS = 5000;
 	private static final int SERVICE_THREAD_SLEEP_TIMEOUT = 5000;
 	private static final int SERVICE_THREAD_PING_ERROR_TIMEOUT = 1000;
 	private static final int SERVICE_THREAD_CONNECT_ERROR_TIMEOUT = 2500;
