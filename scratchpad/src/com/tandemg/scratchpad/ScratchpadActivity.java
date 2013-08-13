@@ -21,6 +21,8 @@ import android.view.WindowManager;
 
 import com.tandemg.scratchpad.communications.PD40TcpClientService;
 import com.tandemg.scratchpad.communications.PD40TcpClientService.PD40TcpClientServiceBinder;
+import com.tandemg.scratchpad.location.PD40LocationService;
+import com.tandemg.scratchpad.location.PD40LocationService.PD40LocationServiceBinder;
 
 public class ScratchpadActivity extends FragmentActivity {
 
@@ -29,9 +31,12 @@ public class ScratchpadActivity extends FragmentActivity {
 	private Fragment touch = new TouchpadActivity();
 	private Fragment mouse = new MousepadActivity();
 
-	boolean mBound = false;
-	private ServiceConnection mConnection;
-	private PD40TcpClientService mService = null;
+	private boolean mTcpServiceBound = false;
+	private ServiceConnection mTcpClientConnection = null;
+	private PD40TcpClientService mTcpClientService = null;
+	private boolean mLocationServiceBound = false;
+	private ServiceConnection mLocationConnection = null;
+	private PD40LocationService mLocationService = null;
 
 	/**
 	 * The pager widget, which handles animation and allows swiping horizontally
@@ -45,22 +50,39 @@ public class ScratchpadActivity extends FragmentActivity {
 	private PagerAdapter mPagerAdapter;
 
 	public ScratchpadActivity() {
-		mConnection = new ServiceConnection() {
-
+		mLocationConnection = new ServiceConnection() {
 			@Override
-			public void onServiceConnected(ComponentName className,
-					IBinder service) {
-				// We've bound to LocalService, cast the IBinder and get
-				// LocalService instance
-				PD40TcpClientServiceBinder binder = (PD40TcpClientServiceBinder) service;
-				mService = binder.getService();
-				mBound = true;
+			public void onServiceConnected(ComponentName name, IBinder service) {
+				Log.v(TAG, "Location service connected");
+				PD40LocationServiceBinder binder = (PD40LocationServiceBinder) service;
+				mLocationService = binder.getService();
+				mLocationServiceBound = true;
 			}
 
 			@Override
-			public void onServiceDisconnected(ComponentName arg0) {
-				mBound = false;
-				mService = null;
+			public void onServiceDisconnected(ComponentName name) {
+				Log.v(TAG, "Location service disconnected");
+				mLocationServiceBound = false;
+				mLocationService = null;
+			}
+		};
+
+		mTcpClientConnection = new ServiceConnection() {
+			@Override
+			public void onServiceConnected(ComponentName name, IBinder service) {
+				Log.v(TAG, "tcp client service connected");
+				// We've bound to LocalService, cast the IBinder and get
+				// LocalService instance
+				PD40TcpClientServiceBinder binder = (PD40TcpClientServiceBinder) service;
+				mTcpClientService = binder.getService();
+				mTcpServiceBound = true;
+			}
+
+			@Override
+			public void onServiceDisconnected(ComponentName name) {
+				Log.v(TAG, "tcp client service disconnected");
+				mTcpServiceBound = false;
+				mTcpClientService = null;
 			}
 		};
 		Log.v(TAG, "ScratchpadActivity object created");
@@ -71,8 +93,13 @@ public class ScratchpadActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_scratchpad);
 
-		Intent intent = new Intent(this, PD40TcpClientService.class);
-		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+		Intent intent;
+
+		intent = new Intent(this, PD40LocationService.class);
+		bindService(intent, mLocationConnection, Context.BIND_AUTO_CREATE);
+
+		intent = new Intent(this, PD40TcpClientService.class);
+		bindService(intent, mTcpClientConnection, Context.BIND_AUTO_CREATE);
 
 		// Show the Up button in the action bar.
 		setupActionBar();
@@ -99,8 +126,13 @@ public class ScratchpadActivity extends FragmentActivity {
 
 	@Override
 	public void onDestroy() {
-		if (mBound) {
-			unbindService(mConnection);
+		if (mLocationServiceBound) {
+			Log.v(TAG, "unbind location service");
+			unbindService(mLocationConnection);
+		}
+		if (mTcpServiceBound) {
+			Log.v(TAG, "unbind tcp service");
+			unbindService(mTcpClientConnection);
 		}
 		super.onDestroy();
 	}
@@ -171,14 +203,14 @@ public class ScratchpadActivity extends FragmentActivity {
 			// Go to the previous step in the wizard. If there is no previous
 			// step, setCurrentItem will do nothing.
 			mPager.setCurrentItem(mPager.getCurrentItem() - 1);
-			mService.setIconConnected(R.drawable.ic_stat_mouse);
+			mTcpClientService.setIconConnected(R.drawable.ic_stat_mouse);
 			return true;
 
 		case R.id.action_next:
 			// Advance to the next step in the wizard. If there is no next step,
 			// setCurrentItem will do nothing.
 			mPager.setCurrentItem(mPager.getCurrentItem() + 1);
-			mService.setIconConnected(R.drawable.ic_stat_droid);
+			mTcpClientService.setIconConnected(R.drawable.ic_stat_droid);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -199,7 +231,7 @@ public class ScratchpadActivity extends FragmentActivity {
 
 	public void onClick_Back(View v) {
 		try {
-			mService.notifyBack();
+			mTcpClientService.notifyBack();
 		} catch (Exception e) {
 			Log.e(TAG, "Error: " + e.toString(), e);
 			e.printStackTrace();
@@ -209,7 +241,7 @@ public class ScratchpadActivity extends FragmentActivity {
 
 	public void onClick_Home(View v) {
 		try {
-			mService.notifyHome();
+			mTcpClientService.notifyHome();
 		} catch (Exception e) {
 			Log.e(TAG, "Error: " + e.toString(), e);
 			e.printStackTrace();
@@ -253,7 +285,15 @@ public class ScratchpadActivity extends FragmentActivity {
 
 	public PD40TcpClientService getTcpService() {
 		synchronized (this) {
-			return mService;
+			return mTcpClientService;
 		}
 	}
+
+	public PD40LocationService getLocationService() {
+		synchronized (this) {
+			return mLocationService;
+		}
+	}
+
+
 }

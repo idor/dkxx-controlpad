@@ -5,10 +5,15 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="17" />
+        android:minSdkVersion="14"
+        android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- add WRITE_SETTINGS and WRITE_SECURE_SETTINGS in order to enable gps -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
 
     <application
         android:allowBackup="true"
@@ -28,6 +33,13 @@
 
         <service
             android:name="com.tandemg.scratchpad.communications.PD40TcpClientService"
+            android:enabled="true"
+            android:exported="false"
+            android:singleUser="true"
+            android:stopWithTask="true" >
+        </service>
+        <service
+            android:name="com.tandemg.scratchpad.location.PD40LocationService"
             android:enabled="true"
             android:exported="false"
             android:singleUser="true"
