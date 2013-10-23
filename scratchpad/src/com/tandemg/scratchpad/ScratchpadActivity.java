@@ -18,7 +18,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import com.tandemg.scratchpad.communications.PD40TcpClientService;
 import com.tandemg.scratchpad.communications.PD40TcpClientService.PD40TcpClientServiceBinder;
 import com.tandemg.scratchpad.location.PD40LocationService;
@@ -122,6 +123,25 @@ public class ScratchpadActivity extends FragmentActivity {
 				invalidateOptionsMenu();
 			}
 		});
+
+		VertSeekBar brightnessBar = (VertSeekBar) findViewById(R.id.brightness_bar);
+		brightnessBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				setGlassBrightness(progress);
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar arg0) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void onStopTrackingTouch(SeekBar arg0) {
+				// TODO Auto-generated method stub
+			}
+		});
 	}
 
 	@Override
@@ -162,6 +182,8 @@ public class ScratchpadActivity extends FragmentActivity {
 	@Override
 	protected void onResume() {
 		Log.d(TAG, "resume");
+		SeekBar brightnessBar = (SeekBar) findViewById(R.id.brightness_bar);
+		brightnessBar.setProgress(getGlassBrightness());
 		super.onResume();
 	}
 
@@ -285,6 +307,16 @@ public class ScratchpadActivity extends FragmentActivity {
 			return mLocationService;
 		}
 	}
-
-
+	
+	public int getGlassBrightness() {
+		// TODO: this will run on every onResume of the activity(to ensure user
+		// did not change the value outside the app)
+		// TODO: in this ctx the scratchpad seekBar will be updated
+		int ret = 0;
+		return ret;
+	}
+	public void setGlassBrightness(int value) {
+		// TODO: this will be called by the seekBar.onChangeListener
+		return;
+	}
 }
