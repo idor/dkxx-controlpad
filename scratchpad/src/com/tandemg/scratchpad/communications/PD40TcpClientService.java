@@ -119,10 +119,11 @@ public class PD40TcpClientService extends Service {
 				Toast.LENGTH_SHORT).show();
 	}
 
-	public void addDataHandler(DataHandler handler) throws Exception {
+	public void addDataHandler(DataHandler handler) {
 		synchronized (this) {
-			if (!mHandlers.add(handler))
-				throw new Exception("could not add data handler");
+			if (!mHandlers.contains(handler))
+				mHandlers.add(handler);
+			// throw new Exception("could not add data handler");
 		}
 	}
 
@@ -390,14 +391,14 @@ public class PD40TcpClientService extends Service {
 			}
 		}
 	}
-	
+
 	public synchronized void setIconConnected(int icon) {
 		mIconConnected = icon;
-		if(getListenerRunning())
+		if (getListenerRunning())
 			showNotificationConnected();
-			
+
 	}
-	
+
 	public synchronized int getIconConnected() {
 		return mIconConnected;
 	}
@@ -674,4 +675,15 @@ public class PD40TcpClientService extends Service {
 				+ String.valueOf(MessageTypes.EV_SCROLL_VERT) + " "
 				+ String.valueOf(Yvalue) + " 0");
 	}
+
+	public void notifyBrightnessSet(final int brightness) {
+		// brightness values are [0,255]
+		this.sendMessage(MessageTypes.POST_BRIGHTNESS + " " + brightness);
+	}
+
+	public void notifyBrightnessGet() {
+		// brightness values are [0,255]
+		this.sendMessage(MessageTypes.GET_BRIGHTNESS);
+	}
+
 }

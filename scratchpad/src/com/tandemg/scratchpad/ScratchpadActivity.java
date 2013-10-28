@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+
 import com.tandemg.scratchpad.communications.PD40TcpClientService;
 import com.tandemg.scratchpad.communications.PD40TcpClientService.PD40TcpClientServiceBinder;
 import com.tandemg.scratchpad.location.PD40LocationService;
@@ -38,7 +39,8 @@ public class ScratchpadActivity extends FragmentActivity {
 	private boolean mLocationServiceBound = false;
 	private ServiceConnection mLocationConnection = null;
 	private PD40LocationService mLocationService = null;
-
+	public DataHandler handler = null;
+	private Thread brightnessDeamonThread = null;
 	/**
 	 * The pager widget, which handles animation and allows swiping horizontally
 	 * to access previous and next wizard steps.
@@ -51,6 +53,7 @@ public class ScratchpadActivity extends FragmentActivity {
 	private PagerAdapter mPagerAdapter;
 
 	public ScratchpadActivity() {
+		handler = new DataHandler();
 		mLocationConnection = new ServiceConnection() {
 			@Override
 			public void onServiceConnected(ComponentName name, IBinder service) {
@@ -67,7 +70,6 @@ public class ScratchpadActivity extends FragmentActivity {
 				mLocationService = null;
 			}
 		};
-
 		mTcpClientConnection = new ServiceConnection() {
 			@Override
 			public void onServiceConnected(ComponentName name, IBinder service) {
@@ -76,6 +78,13 @@ public class ScratchpadActivity extends FragmentActivity {
 				// LocalService instance
 				PD40TcpClientServiceBinder binder = (PD40TcpClientServiceBinder) service;
 				mTcpClientService = binder.getService();
+
+				try {// create and add local handler to the TCP client instance
+					mTcpClientService.addDataHandler(handler);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				mTcpServiceBound = true;
 			}
 
@@ -86,7 +95,21 @@ public class ScratchpadActivity extends FragmentActivity {
 				mTcpClientService = null;
 			}
 		};
+
 		Log.v(TAG, "ScratchpadActivity object created");
+	}
+
+	private class DataHandler
+			implements
+			com.tandemg.scratchpad.communications.PD40TcpClientService.DataHandler {
+		public void handleData(String data) {
+			String[] temp = data.split(" ");
+			switch (temp[0].charAt(0)) {
+			case 'G':
+				recievedGlassBrightness(Integer.parseInt(temp[1]));
+				break;
+			}
+		}
 	}
 
 	@Override
@@ -123,8 +146,9 @@ public class ScratchpadActivity extends FragmentActivity {
 				invalidateOptionsMenu();
 			}
 		});
-
 		VertSeekBar brightnessBar = (VertSeekBar) findViewById(R.id.brightness_bar);
+		brightnessBar.setProgress(50);
+		getGlassBrightness();
 		brightnessBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress,
@@ -141,7 +165,25 @@ public class ScratchpadActivity extends FragmentActivity {
 			public void onStopTrackingTouch(SeekBar arg0) {
 				// TODO Auto-generated method stub
 			}
+
 		});
+
+		brightnessDeamonThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(2000, 0);
+					while (true) {
+						getGlassBrightness();
+						Thread.sleep(5000, 0);
+					}
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		brightnessDeamonThread.start();
 	}
 
 	@Override
@@ -182,8 +224,6 @@ public class ScratchpadActivity extends FragmentActivity {
 	@Override
 	protected void onResume() {
 		Log.d(TAG, "resume");
-		SeekBar brightnessBar = (SeekBar) findViewById(R.id.brightness_bar);
-		brightnessBar.setProgress(getGlassBrightness());
 		super.onResume();
 	}
 
@@ -212,14 +252,13 @@ public class ScratchpadActivity extends FragmentActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if(item.getItemId() ==  R.id.action_previous){
+		if (item.getItemId() == R.id.action_previous) {
 			// Go to the previous step in the wizard. If there is no previous
 			// step, setCurrentItem will do nothing.
 			mPager.setCurrentItem(mPager.getCurrentItem() - 1);
 			mTcpClientService.setIconConnected(R.drawable.ic_stat_mouse);
 			return true;
-		}
-		else if ( item.getItemId() == R.id.action_next){
+		} else if (item.getItemId() == R.id.action_next) {
 			// Advance to the next step in the wizard. If there is no next step,
 			// setCurrentItem will do nothing.
 			mPager.setCurrentItem(mPager.getCurrentItem() + 1);
@@ -307,16 +346,42 @@ public class ScratchpadActivity extends FragmentActivity {
 			return mLocationService;
 		}
 	}
-	
-	public int getGlassBrightness() {
-		// TODO: this will run on every onResume of the activity(to ensure user
-		// did not change the value outside the app)
-		// TODO: in this ctx the scratchpad seekBar will be updated
-		int ret = 0;
-		return ret;
+
+	public void recievedGlassBrightness(int value) {
+		VertSeekBar brightnessBar = (VertSeekBar) findViewById(R.id.brightness_bar);
+		brightnessBar.setProgress((value * 100) / 255 + 1);
+		runOnUiThread(new Runnable() { // only propose is to set the thumb on
+										// the vertical seekbar
+			public void run() {
+				VertSeekBar brightnessBar = (VertSeekBar) findViewById(R.id.brightness_bar);
+				brightnessBar.onSizeChanged(brightnessBar.getWidth(),
+						brightnessBar.getHeight(), 0, 0);
+			}
+		});
 	}
+
+	public void getGlassBrightness() {
+		// TODO: in this ctx the scratchpad seekBar will be updated
+		try {
+			mTcpClientService.notifyBrightnessGet();
+		} catch (Exception e) {
+			Log.e(TAG, "Error: " + e.toString(), e);
+			e.printStackTrace();
+		}
+	}
+
 	public void setGlassBrightness(int value) {
 		// TODO: this will be called by the seekBar.onChangeListener
+		int brightnessValue = (255 * value) / 100;
+		if (brightnessValue == 255)
+			brightnessValue--;
+		try {
+			mTcpClientService.notifyBrightnessSet(brightnessValue);
+		} catch (Exception e) {
+			Log.e(TAG, "Error: " + e.toString(), e);
+			e.printStackTrace();
+		} finally {
+		}
 		return;
 	}
 }
