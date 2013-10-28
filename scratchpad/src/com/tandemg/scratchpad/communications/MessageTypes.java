@@ -25,4 +25,8 @@ public class MessageTypes {
 	public static final int EV_BTN_MIDDLE_RELEASE = 6;
 	public static final int EV_SCROLL_HORIZ = 7;
 	public static final int EV_SCROLL_VERT = 8;
+	
+	//brightness Message
+	public static final String POST_BRIGHTNESS = "P";
+	public static final String GET_BRIGHTNESS = "G";
 }
