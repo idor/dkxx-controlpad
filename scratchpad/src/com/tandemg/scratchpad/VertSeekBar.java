@@ -7,8 +7,12 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.SeekBar;
 
+
 public class VertSeekBar extends SeekBar {
 
+	
+	private static boolean isInitialized = false;
+	
     public VertSeekBar(Context context) {
         super(context);
     }
@@ -32,11 +36,11 @@ public class VertSeekBar extends SeekBar {
     }
 
     protected void onDraw(Canvas c) {
-        c.rotate(-90);
-        c.translate(-getHeight(),0);
-        super.onDraw(c);
+		    c.rotate(-90);
+		    c.translate(-getHeight(),0);
+		    super.onDraw(c);
     }
-/*  @Override
+  @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (!isEnabled()) {
             return false;
@@ -57,5 +61,5 @@ public class VertSeekBar extends SeekBar {
                 break;
         }
         return true;
-    }*/
+    }
 }
