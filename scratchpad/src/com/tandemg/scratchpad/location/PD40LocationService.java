@@ -152,21 +152,21 @@ public class PD40LocationService extends Service implements LocationListener,
 		return mCurrentLocation;
 	}
 
-// @Override
-// public void onProviderDisabled(String provider) {
-// Log.d(TAG, "provider disabled: " + provider.toString());
-// }
-//
-// @Override
-// public void onProviderEnabled(String provider) {
-// Log.d(TAG, "provider enabled: " + provider.toString());
-// }
-//
-// @Override
-// public void onStatusChanged(String provider, int status, Bundle extras) {
-// Log.d(TAG,
-// "status changed, provider: " + provider.toString() +
-// ", status: " + String.valueOf(status) +
-// ", extras: " + extras.toString());
-// }
+	// @Override
+	// public void onProviderDisabled(String provider) {
+	// Log.d(TAG, "provider disabled: " + provider.toString());
+	// }
+	//
+	// @Override
+	// public void onProviderEnabled(String provider) {
+	// Log.d(TAG, "provider enabled: " + provider.toString());
+	// }
+	//
+	// @Override
+	// public void onStatusChanged(String provider, int status, Bundle extras) {
+	// Log.d(TAG,
+	// "status changed, provider: " + provider.toString() +
+	// ", status: " + String.valueOf(status) +
+	// ", extras: " + extras.toString());
+	// }
 }

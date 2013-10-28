@@ -9,15 +9,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ScratchpadActivity" >
 
-<!--     <LinearLayout
-        android:id="@+id/seekbarlayout"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/action_bar"
-        android:gravity="left"
-        android:orientation="horizontal" >
-    </LinearLayout> -->
-
     <LinearLayout
         android:id="@+id/surface"
         android:layout_width="match_parent"
@@ -26,18 +17,17 @@
         android:gravity="right"
         android:orientation="horizontal" >
 
-        
-        <com.tandemg.scratchpad.VertSeekBar android:id="@+id/brightness_bar"
+        <com.tandemg.scratchpad.VertSeekBar
+            android:id="@+id/brightness_bar"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            />
-        
+            android:layout_height="match_parent" />
+
         <com.tandemg.scratchpad.NonSwipeableViewPager
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/pager"
             android:layout_width="match_parent"
-            android:gravity="right"
-            android:layout_height="match_parent" > 
+            android:layout_height="match_parent"
+            android:gravity="right" >
         </com.tandemg.scratchpad.NonSwipeableViewPager>
     </LinearLayout>
 
