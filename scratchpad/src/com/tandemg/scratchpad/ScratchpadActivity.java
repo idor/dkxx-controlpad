@@ -29,7 +29,7 @@ import com.tandemg.scratchpad.location.PD40LocationService.PD40LocationServiceBi
 public class ScratchpadActivity extends FragmentActivity {
 
 	private static final String TAG = "ScratchpadActivity";
-
+	private static final int brightnessTimeout = 5000;
 	private Fragment touch = new TouchpadActivity();
 	private Fragment mouse = new MousepadActivity();
 
@@ -175,7 +175,7 @@ public class ScratchpadActivity extends FragmentActivity {
 					Thread.sleep(2000, 0);
 					while (true) {
 						getGlassBrightness();
-						Thread.sleep(5000, 0);
+						Thread.sleep(brightnessTimeout, 0);
 					}
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
