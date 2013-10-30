@@ -9,7 +9,7 @@
     <string name="button_home">HOME</string>
     <string name="title_activity_touchpad">Lumus Touchpad</string>
     <string name="title_activity_mousepad">Lumus Mousepad</string>
-    <string name="title_activity_scratchpad">Scratchpad</string>
+    <string name="title_activity_scratchpad">Lumus Scratchpad</string>
 
     <!-- Actions -->
     <string name="action_previous">Mousepad</string>
