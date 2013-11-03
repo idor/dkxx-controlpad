@@ -363,7 +363,7 @@ public class ScratchpadActivity extends FragmentActivity {
 	public void getGlassBrightness() {
 		// TODO: in this ctx the scratchpad seekBar will be updated
 		try {
-			mTcpClientService.notifyBrightnessGet();
+			if (mTcpClientService != null)	mTcpClientService.notifyBrightnessGet();
 		} catch (Exception e) {
 			Log.e(TAG, "Error: " + e.toString(), e);
 			e.printStackTrace();
