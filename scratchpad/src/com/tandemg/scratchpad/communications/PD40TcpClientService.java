@@ -407,6 +407,7 @@ public class PD40TcpClientService extends Service {
 	 * Show a notification while this service is running.
 	 */
 	private void setupNotification() {
+
 		synchronized (this) {
 			mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 			mNotificationBuilder = new NotificationCompat.Builder(this);
@@ -594,6 +595,10 @@ public class PD40TcpClientService extends Service {
 		this.sendMessage(MessageTypes.MSG_BACK);
 	}
 
+	public void notifyOptions() {
+		this.sendMessage(MessageTypes.MSG_OPTIONS);
+	}
+
 	public void notifyHome() {
 		this.sendMessage(MessageTypes.MSG_HOME);
 	}
@@ -686,4 +691,8 @@ public class PD40TcpClientService extends Service {
 		this.sendMessage(MessageTypes.GET_BRIGHTNESS);
 	}
 
+	public void notifyKeyboardChar(int keyCode) {
+		this.sendMessage(MessageTypes.MSG_KEYBOARD_CLICK + " " + keyCode + " 1");
+		this.sendMessage(MessageTypes.MSG_KEYBOARD_CLICK + " " + keyCode + " 0");
+	}
 }

@@ -5,7 +5,7 @@ public class MessageTypes {
 	// Android messages
 	public static final String MSG_BACK = "B";
 	public static final String MSG_HOME = "H";
-
+	public static final String MSG_OPTIONS = "O";
 	// touch messages
 	public static final String MSG_TOUCH_DOWN = "D";
 	public static final String MSG_TOUCH_MOVE = "M";
@@ -29,4 +29,7 @@ public class MessageTypes {
 	// brightness Message
 	public static final String POST_BRIGHTNESS = "P";
 	public static final String GET_BRIGHTNESS = "G";
+
+	// keyboard message
+	public static final String MSG_KEYBOARD_CLICK = "k";
 }

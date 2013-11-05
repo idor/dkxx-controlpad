@@ -1,9 +1,13 @@
 package com.tandemg.scratchpad;
 
+import java.util.HashMap;
+
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
@@ -13,11 +17,13 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Editable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
@@ -27,6 +33,112 @@ import com.tandemg.scratchpad.location.PD40LocationService;
 import com.tandemg.scratchpad.location.PD40LocationService.PD40LocationServiceBinder;
 
 public class ScratchpadActivity extends FragmentActivity {
+
+	static final HashMap<String, Integer> map = new HashMap<String, Integer>() {
+		{
+			put("GRAVE", 0);
+			put("ESC", 1);
+			put("1", 2);
+			put("2", 3);
+			put("3", 4);
+			put("4", 5);
+			put("5", 6);
+			put("6", 7);
+			put("7", 8);
+			put("8", 9);
+			put("9", 10);
+			put("0", 11);
+			put("-", 12);
+			put("=", 13);
+			put("BACKSPACE", 14);
+			put("TAB", 15);
+			put("Q", 16);
+			put("W", 17);
+			put("E", 18);
+			put("R", 19);
+			put("T", 20);
+			put("Y", 21);
+			put("U", 22);
+			put("I", 23);
+			put("O", 24);
+			put("P", 25);
+			put("(", 26);
+			put(")", 27);
+			put("\\", 28);
+			put("CAPSLOCK", 29);
+			put("A", 30);
+			put("S", 31);
+			put("D", 32);
+			put("F", 33);
+			put("G", 34);
+			put("H", 35);
+			put("J", 36);
+			put("K", 37);
+			put("L", 38);
+			put(";", 39);
+			put("*", 40);
+			put("ENTER", 41);
+			put("LEFTSHIFT", 42);
+			put("Z", 43);
+			put("X", 44);
+			put("C", 45);
+			put("V", 46);
+			put("B", 47);
+			put("N", 48);
+			put("M", 49);
+			put(",", 50);
+			put(".", 51);
+			put("/", 52);
+			put("RIGHTSHIFT", 53);
+			put("LEFTCTRL", 54);
+			put("LEFTMETA", 55);
+			put("LEFTALT", 56);
+			put(" ", 57);
+			put("RIGHTALT", 58);
+			put("RIGHTCTRL", 59);
+			put("UP", 60);
+			put("DOWN", 61);
+			put("LEFT", 62);
+			put("RIGHT", 63);
+			put("PAGEUP", 64);
+			put("PAGEDOWN", 65);
+			put("F1", 66);
+			put("F2", 67);
+			put("F3", 68);
+			put("F4", 69);
+			put("F5", 70);
+			put("F6", 71);
+			put("F7", 72);
+			put("F8", 73);
+			put("F9", 74);
+			put("F10", 75);
+			put("F11", 76);
+			put("F12", 77);
+			put("HOME", 78);
+			put("END", 79);
+			put("INSERT", 80);
+			put("DELETE", 81);
+			put("SYSRQ", 82);
+			// put("PRINTSCRN", 82);
+			put("KP1", 83);
+			put("KP2", 84);
+			put("KP3", 85);
+			put("KP4", 86);
+			put("KP5", 87);
+			put("KP6", 88);
+			put("KP7", 89);
+			put("KP8", 90);
+			put("KP9", 91);
+			put("KP0", 92);
+			put("VOLUMEUP", 93);
+			put("VOLUMEDOWN", 94);
+			put("MUTE", 95);
+			put("PLAYPAUSE", 96);
+			put("PREVIOUSSONG", 97);
+			put("NEXTSONG", 98);
+			put("HOMEPAGE", 99);
+		}
+	};
 
 	private static final String TAG = "ScratchpadActivity";
 	private static final int brightnessTimeout = 5000;
@@ -301,6 +413,59 @@ public class ScratchpadActivity extends FragmentActivity {
 		}
 	}
 
+	public void onClick_Options(View v) {
+
+		try {
+			mTcpClientService.notifyOptions();
+		} catch (Exception e) {
+			Log.e(TAG, "Error: " + e.toString(), e);
+			e.printStackTrace();
+		} finally {
+		}
+
+	}
+
+	public void onClick_Keyboard(View v) {
+		/*
+		 * currently we support only specific one-char values. no full ASCII
+		 * support, no Upper-Cases for instance.
+		 */
+		AlertDialog.Builder alert = new AlertDialog.Builder(this); // android.R.style.Theme_Dialog
+		alert.setTitle("Push String");
+		alert.setMessage("");
+
+		final EditText input = new EditText(this);
+		alert.setView(input);
+		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				// TODO: make sure somehow data was transfered correctly?
+				Editable value = input.getText();
+				String temp;
+				for (int indexer = 0; indexer < value.length(); indexer++) {
+					temp = value.toString().substring(indexer, indexer + 1)
+							.toUpperCase();
+					if (map.containsKey(temp)) {
+						mTcpClientService.notifyKeyboardChar(map.get(temp));
+					} else {
+						Log.w(TAG, "Charactaer: " + temp
+								+ ", was not recognized");
+					}
+				}
+			}
+		});
+
+		alert.setNegativeButton("Cancel",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						// Canceled.
+					}
+				});
+		AlertDialog dialog = alert.create();
+		dialog.getWindow().setSoftInputMode(
+				WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+		dialog.show();
+	}
+
 	/**
 	 * A simple pager adapter that represents 5 {@link ScreenSlidePageFragment}
 	 * objects, in sequence.
@@ -363,7 +528,8 @@ public class ScratchpadActivity extends FragmentActivity {
 	public void getGlassBrightness() {
 		// TODO: in this ctx the scratchpad seekBar will be updated
 		try {
-			if (mTcpClientService != null)	mTcpClientService.notifyBrightnessGet();
+			if (mTcpClientService != null)
+				mTcpClientService.notifyBrightnessGet();
 		} catch (Exception e) {
 			Log.e(TAG, "Error: " + e.toString(), e);
 			e.printStackTrace();

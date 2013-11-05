@@ -56,6 +56,16 @@
             android:layout_height="25dp"
             android:onClick="onClick_Home"
             android:text="@string/button_home" />
+
+        <Button
+            android:id="@+id/button_keyboard"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:gravity="right"
+            android:onClick="onClick_Keyboard"
+            android:text="@string/button_keyboard" />
+
     </LinearLayout>
 
 </RelativeLayout>
