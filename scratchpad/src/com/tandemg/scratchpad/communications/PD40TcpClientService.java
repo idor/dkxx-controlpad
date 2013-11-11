@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -86,9 +87,10 @@ public class PD40TcpClientService extends Service {
 	public void onCreate() {
 		// Display a notification about us starting. We put an icon in the
 		// status bar.
-		setupNotification();
-		showNotificationStarted();
-
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+			setupNotification();
+			showNotificationStarted();
+		}
 		startServiceThread();
 	}
 
@@ -108,11 +110,12 @@ public class PD40TcpClientService extends Service {
 	@Override
 	public void onDestroy() {
 		Log.d(TAG, "PD40 TCP client service destroyed");
-		showNotificationStopped();
-
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+			showNotificationStopped();
+			mNotificationManager.cancel(mNotificationId);
+		}
 		stopServiceThread();
 		// Cancel the persistent notification.
-		mNotificationManager.cancel(mNotificationId);
 
 		// Tell the user we stopped.
 		Toast.makeText(this, R.string.pd40tcp_service_stopped,
@@ -406,8 +409,8 @@ public class PD40TcpClientService extends Service {
 	/**
 	 * Show a notification while this service is running.
 	 */
+	@SuppressLint("NewApi")
 	private void setupNotification() {
-
 		synchronized (this) {
 			mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 			mNotificationBuilder = new NotificationCompat.Builder(this);
