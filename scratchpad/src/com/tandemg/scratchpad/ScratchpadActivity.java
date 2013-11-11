@@ -1,7 +1,5 @@
 package com.tandemg.scratchpad;
 
-import java.util.HashMap;
-
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -35,9 +33,7 @@ import com.tandemg.scratchpad.location.PD40LocationService.PD40LocationServiceBi
 public class ScratchpadActivity extends FragmentActivity {
 	private static final String TAG = "ScratchpadActivity";
 	private static final int brightnessTimeout = 5000;
-	private Fragment touch = new TouchpadActivity();
 	private Fragment mouse = new MousepadActivity();
-	private Fragment keyboard = new KeypadActivity();
 
 	private boolean mTcpServiceBound = false;
 	private ServiceConnection mTcpClientConnection = null;
@@ -251,10 +247,6 @@ public class ScratchpadActivity extends FragmentActivity {
 
 		menu.findItem(R.id.action_previous).setEnabled(
 				mPager.getCurrentItem() != 0);
-		menu.findItem(R.id.action_next)
-				.setEnabled(mPager.getCurrentItem() != 1);
-		menu.findItem(R.id.action_keyboard).setEnabled(
-				mPager.getCurrentItem() != 2);
 		return true;
 	}
 
@@ -265,16 +257,6 @@ public class ScratchpadActivity extends FragmentActivity {
 			// step, setCurrentItem will do nothing.
 			mPager.setCurrentItem(0);
 			mTcpClientService.setIconConnected(R.drawable.ic_stat_mouse);
-			return true;
-		} else if (item.getItemId() == R.id.action_next) {
-			// Advance to the next step in the wizard. If there is no next step,
-			// setCurrentItem will do nothing.
-			mPager.setCurrentItem(1);
-			mTcpClientService.setIconConnected(R.drawable.ic_stat_droid);
-			return true;
-		} else if (item.getItemId() == R.id.action_keyboard) {
-			mPager.setCurrentItem(2);
-			mTcpClientService.setIconConnected(R.drawable.ic_stat_keypad);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -331,7 +313,7 @@ public class ScratchpadActivity extends FragmentActivity {
 		 * support, no Upper-Cases for instance.
 		 */
 		AlertDialog.Builder alert = new AlertDialog.Builder(this); // android.R.style.Theme_Dialog
-		alert.setTitle("Push String");
+		alert.setTitle("Push string");
 		alert.setMessage("");
 
 		final EditText input = new EditText(this);
@@ -369,30 +351,16 @@ public class ScratchpadActivity extends FragmentActivity {
 
 		@Override
 		public Fragment getItem(int position) {
-			if (position == 0) {
-				if (mouse == null) {
-					Log.d(TAG, "mouse was null");
-					mouse = new MousepadActivity();
-				}
-				return (Fragment) mouse;
-			} else if (position == 1) {
-				if (touch == null) {
-					Log.d(TAG, "touch was null");
-					touch = new TouchpadActivity();
-				}
-				return (Fragment) touch;
-			} else {
-				if (keyboard == null) {
-					Log.d(TAG, "keyboard was null");
-					keyboard = new KeypadActivity();
-				}
-				return (Fragment) keyboard;
+			if (mouse == null) {
+				Log.d(TAG, "mouse was null");
+				mouse = new MousepadActivity();
 			}
+			return (Fragment) mouse;
 		}
 
 		@Override
 		public int getCount() {
-			return 3;
+			return 1;
 		}
 	}
 
@@ -422,7 +390,6 @@ public class ScratchpadActivity extends FragmentActivity {
 	}
 
 	public void getGlassBrightness() {
-		// TODO: in this ctx the scratchpad seekBar will be updated
 		try {
 			if (mTcpClientService != null)
 				mTcpClientService.notifyBrightnessGet();
