@@ -8,6 +8,7 @@
     <string name="button_back">BACK</string>
     <string name="button_home">HOME</string>
     <string name="button_keyboard">Keyboard</string>
+    <string name="button_options">Options</string>
     <string name="title_activity_touchpad">Lumus Touchpad</string>
     <string name="title_activity_mousepad">Lumus Mousepad</string>
     <string name="title_activity_scratchpad">Lumus Scratchpad</string>
