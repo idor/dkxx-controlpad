@@ -15,6 +15,7 @@
     <!-- Actions -->
     <string name="action_previous">Mousepad</string>
     <string name="action_next">Touchpad</string>
+    <string name="action_keyboard">Keypad</string>
 
     <!-- PD40 TCP Client Service -->
     <string name="pd40tcp_service_label">PD40 Connection Service</string>

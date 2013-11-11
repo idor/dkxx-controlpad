@@ -33,117 +33,11 @@ import com.tandemg.scratchpad.location.PD40LocationService;
 import com.tandemg.scratchpad.location.PD40LocationService.PD40LocationServiceBinder;
 
 public class ScratchpadActivity extends FragmentActivity {
-
-	static final HashMap<String, Integer> map = new HashMap<String, Integer>() {
-		{
-			put("GRAVE", 0);
-			put("ESC", 1);
-			put("1", 2);
-			put("2", 3);
-			put("3", 4);
-			put("4", 5);
-			put("5", 6);
-			put("6", 7);
-			put("7", 8);
-			put("8", 9);
-			put("9", 10);
-			put("0", 11);
-			put("-", 12);
-			put("=", 13);
-			put("BACKSPACE", 14);
-			put("TAB", 15);
-			put("Q", 16);
-			put("W", 17);
-			put("E", 18);
-			put("R", 19);
-			put("T", 20);
-			put("Y", 21);
-			put("U", 22);
-			put("I", 23);
-			put("O", 24);
-			put("P", 25);
-			put("(", 26);
-			put(")", 27);
-			put("\\", 28);
-			put("CAPSLOCK", 29);
-			put("A", 30);
-			put("S", 31);
-			put("D", 32);
-			put("F", 33);
-			put("G", 34);
-			put("H", 35);
-			put("J", 36);
-			put("K", 37);
-			put("L", 38);
-			put(";", 39);
-			put("*", 40);
-			put("ENTER", 41);
-			put("LEFTSHIFT", 42);
-			put("Z", 43);
-			put("X", 44);
-			put("C", 45);
-			put("V", 46);
-			put("B", 47);
-			put("N", 48);
-			put("M", 49);
-			put(",", 50);
-			put(".", 51);
-			put("/", 52);
-			put("RIGHTSHIFT", 53);
-			put("LEFTCTRL", 54);
-			put("LEFTMETA", 55);
-			put("LEFTALT", 56);
-			put(" ", 57);
-			put("RIGHTALT", 58);
-			put("RIGHTCTRL", 59);
-			put("UP", 60);
-			put("DOWN", 61);
-			put("LEFT", 62);
-			put("RIGHT", 63);
-			put("PAGEUP", 64);
-			put("PAGEDOWN", 65);
-			put("F1", 66);
-			put("F2", 67);
-			put("F3", 68);
-			put("F4", 69);
-			put("F5", 70);
-			put("F6", 71);
-			put("F7", 72);
-			put("F8", 73);
-			put("F9", 74);
-			put("F10", 75);
-			put("F11", 76);
-			put("F12", 77);
-			put("HOME", 78);
-			put("END", 79);
-			put("INSERT", 80);
-			put("DELETE", 81);
-			put("SYSRQ", 82);
-			// put("PRINTSCRN", 82);
-			put("KP1", 83);
-			put("KP2", 84);
-			put("KP3", 85);
-			put("KP4", 86);
-			put("KP5", 87);
-			put("KP6", 88);
-			put("KP7", 89);
-			put("KP8", 90);
-			put("KP9", 91);
-			put("KP0", 92);
-			put("VOLUMEUP", 93);
-			put("VOLUMEDOWN", 94);
-			put("MUTE", 95);
-			put("PLAYPAUSE", 96);
-			put("PREVIOUSSONG", 97);
-			put("NEXTSONG", 98);
-			put("HOMEPAGE", 99);
-		}
-	};
-
 	private static final String TAG = "ScratchpadActivity";
 	private static final int brightnessTimeout = 5000;
 	private Fragment touch = new TouchpadActivity();
 	private Fragment mouse = new MousepadActivity();
+	private Fragment keyboard = new KeypadActivity();
 
 	private boolean mTcpServiceBound = false;
 	private ServiceConnection mTcpClientConnection = null;
@@ -157,7 +51,7 @@ public class ScratchpadActivity extends FragmentActivity {
 	 * The pager widget, which handles animation and allows swiping horizontally
 	 * to access previous and next wizard steps.
 	 */
-	private ViewPager mPager;
+	private NonSwipeableViewPager mPager;
 
 	/**
 	 * The pager adapter, which provides the pages to the view pager widget.
@@ -244,7 +138,7 @@ public class ScratchpadActivity extends FragmentActivity {
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		// Instantiate a ViewPager and a PagerAdapter.
-		mPager = (ViewPager) findViewById(R.id.pager);
+		mPager = (NonSwipeableViewPager) findViewById(R.id.pager);
 		mPagerAdapter = new ScreenSlidePagerAdapter(getFragmentManager());
 		mPager.setAdapter(mPagerAdapter);
 		mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -356,9 +250,11 @@ public class ScratchpadActivity extends FragmentActivity {
 		getMenuInflater().inflate(R.menu.activity_screen_slide, menu);
 
 		menu.findItem(R.id.action_previous).setEnabled(
-				mPager.getCurrentItem() > 0);
-		menu.findItem(R.id.action_next).setEnabled(
-				(mPager.getCurrentItem() != mPagerAdapter.getCount() - 1));
+				mPager.getCurrentItem() != 0);
+		menu.findItem(R.id.action_next)
+				.setEnabled(mPager.getCurrentItem() != 1);
+		menu.findItem(R.id.action_keyboard).setEnabled(
+				mPager.getCurrentItem() != 2);
 		return true;
 	}
 
@@ -367,14 +263,18 @@ public class ScratchpadActivity extends FragmentActivity {
 		if (item.getItemId() == R.id.action_previous) {
 			// Go to the previous step in the wizard. If there is no previous
 			// step, setCurrentItem will do nothing.
-			mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+			mPager.setCurrentItem(0);
 			mTcpClientService.setIconConnected(R.drawable.ic_stat_mouse);
 			return true;
 		} else if (item.getItemId() == R.id.action_next) {
 			// Advance to the next step in the wizard. If there is no next step,
 			// setCurrentItem will do nothing.
-			mPager.setCurrentItem(mPager.getCurrentItem() + 1);
+			mPager.setCurrentItem(1);
 			mTcpClientService.setIconConnected(R.drawable.ic_stat_droid);
+			return true;
+		} else if (item.getItemId() == R.id.action_keyboard) {
+			mPager.setCurrentItem(2);
+			mTcpClientService.setIconConnected(R.drawable.ic_stat_keypad);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -440,17 +340,7 @@ public class ScratchpadActivity extends FragmentActivity {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				// TODO: make sure somehow data was transfered correctly?
 				Editable value = input.getText();
-				String temp;
-				for (int indexer = 0; indexer < value.length(); indexer++) {
-					temp = value.toString().substring(indexer, indexer + 1)
-							.toUpperCase();
-					if (map.containsKey(temp)) {
-						mTcpClientService.notifyKeyboardChar(map.get(temp));
-					} else {
-						Log.w(TAG, "Charactaer: " + temp
-								+ ", was not recognized");
-					}
-				}
+				mTcpClientService.notifyKeyboardChar(value.toString());
 			}
 		});
 
@@ -485,18 +375,24 @@ public class ScratchpadActivity extends FragmentActivity {
 					mouse = new MousepadActivity();
 				}
 				return (Fragment) mouse;
-			} else {
+			} else if (position == 1) {
 				if (touch == null) {
 					Log.d(TAG, "touch was null");
 					touch = new TouchpadActivity();
 				}
 				return (Fragment) touch;
+			} else {
+				if (keyboard == null) {
+					Log.d(TAG, "keyboard was null");
+					keyboard = new KeypadActivity();
+				}
+				return (Fragment) keyboard;
 			}
 		}
 
 		@Override
 		public int getCount() {
-			return 2;
+			return 3;
 		}
 	}
 

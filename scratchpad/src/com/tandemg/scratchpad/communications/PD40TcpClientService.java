@@ -429,6 +429,7 @@ public class PD40TcpClientService extends Service {
 					0, PendingIntent.FLAG_UPDATE_CURRENT);
 			mNotificationBuilder.setContentIntent(resultPendingIntent);
 		}
+
 	}
 
 	private void showNotificationStarted() {
@@ -691,8 +692,7 @@ public class PD40TcpClientService extends Service {
 		this.sendMessage(MessageTypes.GET_BRIGHTNESS);
 	}
 
-	public void notifyKeyboardChar(int keyCode) {
-		this.sendMessage(MessageTypes.MSG_KEYBOARD_CLICK + " " + keyCode + " 1");
-		this.sendMessage(MessageTypes.MSG_KEYBOARD_CLICK + " " + keyCode + " 0");
+	public void notifyKeyboardChar(String text) {
+		this.sendMessage(MessageTypes.MSG_KEYBOARD_CLICK + " " + text);
 	}
 }

@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ScratchpadActivity" >
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/surface"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -25,11 +25,12 @@
         <com.tandemg.scratchpad.NonSwipeableViewPager
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/pager"
+            android:paddingLeft="22dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="right" >
         </com.tandemg.scratchpad.NonSwipeableViewPager>
-    </LinearLayout>
+    </FrameLayout>
 
     <LinearLayout
         android:id="@id/action_bar"
@@ -62,10 +63,9 @@
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="25dp"
-            android:gravity="right"
+            android:gravity="left"
             android:onClick="onClick_Keyboard"
             android:text="@string/button_keyboard" />
-
     </LinearLayout>
 
 </RelativeLayout>
