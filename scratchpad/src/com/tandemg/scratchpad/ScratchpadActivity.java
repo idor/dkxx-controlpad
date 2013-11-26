@@ -402,8 +402,6 @@ public class ScratchpadActivity extends FragmentActivity {
 	public void setGlassBrightness(int value) {
 		// TODO: this will be called by the seekBar.onChangeListener
 		int brightnessValue = (255 * value) / 100;
-		if (brightnessValue == 255)
-			brightnessValue--;
 		try {
 			mTcpClientService.notifyBrightnessSet(brightnessValue);
 		} catch (Exception e) {
