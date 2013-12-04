@@ -20,7 +20,8 @@
         <com.tandemg.scratchpad.VertSeekBar
             android:id="@+id/brightness_bar"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:thumb="@drawable/brightness_krita" />
 
         <com.tandemg.scratchpad.NonSwipeableViewPager
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -28,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="right"
-            android:paddingLeft="25dp" >
+            android:paddingLeft="30dp" >
         </com.tandemg.scratchpad.NonSwipeableViewPager>
     </FrameLayout>
 
@@ -36,46 +37,62 @@
         android:id="@id/action_bar"
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/surface"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:gravity="bottom"
         android:orientation="horizontal" >
 
-        <Button
+        <ImageView
+            android:id="@+id/place_holder1"
+            android:layout_width="45dp"
+            android:layout_height="match_parent"
+            android:alpha="0"
+            android:src="@drawable/ic_menu_back" />
+
+        <ImageButton
             android:id="@+id/button_back"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_width="65dp"
+            android:layout_height="match_parent"
             android:onClick="onClick_Back"
-            android:paddingLeft="40dp"
+            android:src="@drawable/ic_menu_back"
             android:text="@string/button_back" />
 
-        <Button
+        <ImageButton
             android:id="@+id/button_home"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_width="65dp"
+            android:layout_height="match_parent"
             android:onClick="onClick_Home"
+            android:src="@drawable/ic_menu_home"
             android:text="@string/button_home" />
 
-        <Button
+        <ImageButton
             android:id="@+id/button_keyboard"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_width="65dp"
+            android:layout_height="match_parent"
             android:gravity="left"
             android:onClick="onClick_Keyboard"
+            android:src="@drawable/ic_menu_edit"
             android:text="@string/button_keyboard" />
 
-        <Button
+        <ImageButton
             android:id="@+id/button_options"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_width="65dp"
+            android:layout_height="match_parent"
             android:gravity="left"
             android:onClick="onClick_Options"
+            android:src="@drawable/ic_menu_settings_holo_light"
             android:text="@string/button_options" />
+
+        <ImageView
+            android:id="@+id/place_holder2"
+            android:layout_width="15dp"
+            android:layout_height="match_parent"
+            android:alpha="0"
+            android:src="@drawable/ic_menu_back" />
     </LinearLayout>
 
 </RelativeLayout>
