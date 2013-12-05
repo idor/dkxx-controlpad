@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tandemg.scratchpad"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.1.1.0" >
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -23,6 +23,7 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
         <activity
             android:name="com.tandemg.scratchpad.ScratchpadActivity"
             android:configChanges="orientation|keyboardHidden|screenLayout|screenSize"
@@ -38,14 +39,12 @@
             android:name="com.tandemg.scratchpad.communications.PD40TcpClientService"
             android:enabled="true"
             android:exported="false"
-            android:singleUser="true"
             android:stopWithTask="true" >
         </service>
         <service
             android:name="com.tandemg.scratchpad.location.PD40LocationService"
             android:enabled="true"
             android:exported="false"
-            android:singleUser="true"
             android:stopWithTask="true" >
         </service>
     </application>
