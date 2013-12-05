@@ -19,6 +19,8 @@ public class MousepadActivity extends Fragment {
 
 	private int mLastScrollX;
 	private int mLastScrollY;
+	private int sendYScroll;
+	private int sendXScroll;
 
 	private ViewGroup rootView;
 
@@ -34,6 +36,8 @@ public class MousepadActivity extends Fragment {
 		rootView = (ViewGroup) inflater.inflate(R.layout.activity_mousepad,
 				container, false);
 
+		sendYScroll = 0;
+		sendXScroll = 0;
 		mLastX = 0;
 		mLastY = 0;
 
@@ -182,9 +186,11 @@ public class MousepadActivity extends Fragment {
 		case MotionEvent.ACTION_MOVE:
 			Yvalue = Math.round(event.getY()) - mLastScrollY;
 			Yvalue = -Math.round(Yvalue / 3);
-
-			((ScratchpadActivity) getActivity()).getTcpService()
-					.notifyMouseVScroll(Yvalue);
+			sendYScroll = ++sendYScroll % 4;
+			if (0 == sendYScroll) {
+				((ScratchpadActivity) getActivity()).getTcpService()
+						.notifyMouseVScroll(Yvalue);
+			}
 			mLastScrollY = Math.round(event.getY());
 			break;
 		}
@@ -203,8 +209,11 @@ public class MousepadActivity extends Fragment {
 			Xvalue = Math.round(event.getX()) - mLastScrollX;
 			Xvalue = Math.round(Xvalue / 3);
 
-			((ScratchpadActivity) getActivity()).getTcpService()
-					.notifyMouseHScroll(Xvalue);
+			sendXScroll = ++sendXScroll % 4;
+			if (0 == sendXScroll) {
+				((ScratchpadActivity) getActivity()).getTcpService()
+						.notifyMouseHScroll(Xvalue);
+			}
 			mLastScrollX = Math.round(event.getX());
 			break;
 		}
