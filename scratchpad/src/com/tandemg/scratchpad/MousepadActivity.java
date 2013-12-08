@@ -115,6 +115,8 @@ public class MousepadActivity extends Fragment {
 		wheel.setViewAdapter(new MyAbstractWheelAdapter(this.getActivity(),
 				scale));
 		wheel.setCurrentItem(16);
+		wheel.enableOnReleaseMoveTo(true);
+		wheel.setOnReleaseMoveTo(16);
 		wheel.setCyclic(false);
 		wheel.setInterpolator(new AnticipateOvershootInterpolator());
 	}
