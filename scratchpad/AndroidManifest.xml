@@ -27,7 +27,8 @@
         <activity
             android:name="com.tandemg.scratchpad.ScratchpadActivity"
             android:configChanges="orientation|keyboardHidden|screenLayout|screenSize"
-            android:label="@string/title_activity_scratchpad" >
+            android:label="@string/title_activity_scratchpad"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
