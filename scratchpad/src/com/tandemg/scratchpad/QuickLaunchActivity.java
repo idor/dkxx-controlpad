@@ -18,7 +18,6 @@ public class QuickLaunchActivity extends Fragment {
 
 	private Vector<String[]> intentStrings;
 	private ViewGroup rootView;
-	private SharedPreferences pref;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,15 +33,34 @@ public class QuickLaunchActivity extends Fragment {
 		rootView = (ViewGroup) inflater.inflate(R.layout.activity_quicklaunch,
 				container, false);
 
+		SharedPreferences pref;
 		pref = this.getActivity().getSharedPreferences("quick_launcher_config",
 				Context.MODE_WORLD_WRITEABLE);
 
-		for (int x = 0; x < 5; x++) { // in future, to insert default values,
-										// remove this for, and call each
-										// 'getString separetly'
-			intentStrings.add(pref.getString(Integer.toString(x), "")
-					.split(","));
-		}
+		// Text,Packege,Activity,Action
+		SharedPreferences.Editor prefEditor = pref.edit();
+
+		String tmp = "ADE,ACTION_MAIN,com.example.hellopanoramagl,MainActivity";
+		intentStrings.add(pref.getString("0", tmp).split(","));
+		prefEditor.putString("0", pref.getString("0", tmp)); // will generate
+																// the file
+																// template on
+																// first run
+
+		tmp = "Lumus Demo,ACTION_MAIN,com.tandemg.pd40demo,MainActivity";
+		intentStrings.add(pref.getString("1", tmp).split(","));
+
+		tmp = "Image Capture,android.media.action.IMAGE_CAPTURE, , ";
+		intentStrings.add(pref.getString("2", tmp).split(","));
+
+		tmp = "GyroCompass,ACTION_MAIN,fi.finwe.gyrocompass,Compass";
+		intentStrings.add(pref.getString("3", tmp).split(","));
+
+		tmp = "Skype,ACTION_MAIN,com.skype.raider,Main";
+		intentStrings.add(pref.getString("4", tmp).split(","));
+		prefEditor.commit();
+
+		// bind Buttons to text and clickListeners.
 		Button b = (Button) rootView.findViewById(R.id.quickLauncherButton0);
 		b.setText(intentStrings.get(0)[0]);
 		b.setOnClickListener(mClickListener);
@@ -83,10 +101,11 @@ public class QuickLaunchActivity extends Fragment {
 		if (tmp != null) {
 			((ScratchpadActivity) getActivity()).getTcpService()
 					.notifyStartIntent(tmp[1], tmp[2], tmp[3]);
-			Log.e(TAG, "Intent string was empty, no app was launched");
+			Log.e(TAG, "Intent Launched. Action: " + tmp[1] + ", Packege: "
+					+ tmp[2] + ", Activity: " + tmp[3]);
 		} else {
-			Log.e(TAG, "Intent Launched. Packege: " + tmp[1] + ", Activity: "
-					+ tmp[2] + ", Action: " + tmp[3]);
+			Log.e(TAG, "Intent string was empty, no app was launched");
+
 		}
 
 	}

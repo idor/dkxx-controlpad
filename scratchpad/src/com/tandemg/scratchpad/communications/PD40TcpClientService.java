@@ -609,8 +609,8 @@ public class PD40TcpClientService extends Service {
 
 	public void notifyStartIntent(final String action, final String pkg,
 			final String activity) {
-		this.sendMessage(MessageTypes.MSG_INTENT + " " + pkg + " " + activity
-				+ " " + action);
+		this.sendMessage(MessageTypes.MSG_INTENT + " " + action + " " + pkg
+				+ " " + activity);
 	}
 
 	public void notifyMouseMove(final int Xvalue, final int Yvalue) {
