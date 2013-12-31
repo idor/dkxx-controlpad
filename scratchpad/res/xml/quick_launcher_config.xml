@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+	<string name="0">Text,Packege,Activity,Action</string>
+	<string name="1">Text,Action,PackageName,ActivityName</string>
+	<string name="2">Text,Action,PackageName,ActivityName</string>
+	<string name="3">Text,Action,PackageName,ActivityName</string>
+	<string name="4">Text,Action,PackageName,ActivityName</string>
+</map>
