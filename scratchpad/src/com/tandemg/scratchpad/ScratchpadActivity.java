@@ -36,6 +36,7 @@ public class ScratchpadActivity extends FragmentActivity {
 	private static final String TAG = "ScratchpadActivity";
 	private static final int brightnessTimeout = 5000;
 	private Fragment mouse = new MousepadActivity();
+	private Fragment quickLaunch = new QuickLaunchActivity();
 	private boolean mTcpServiceBound = false;
 	private ServiceConnection mTcpClientConnection = null;
 	private PD40TcpClientService mTcpClientService = null;
@@ -239,24 +240,35 @@ public class ScratchpadActivity extends FragmentActivity {
 
 	@Override
 	public void onBackPressed() {
-		super.onBackPressed();
+		if (mPager.getCurrentItem() != 0) {// return to main fragment on back
+											// pressed
+			mPager.setCurrentItem(0);
+		} else {
+			super.onBackPressed();
+		}
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.activity_screen_slide, menu);
-
-		menu.findItem(R.id.action_previous).setEnabled(
-				mPager.getCurrentItem() != 0);
+		menu.findItem(R.id.action_bar_settings).setEnabled(true);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == R.id.action_previous) {
-			// Go to the previous step in the wizard. If there is no previous
-			// step, setCurrentItem will do nothing.
+		if (item.getItemId() == R.id.action_bar_settings) {
+			if (mPager.getCurrentItem() == 1) {
+				mPager.setCurrentItem(0);
+				mTcpClientService.setIconConnected(R.drawable.ic_stat_mouse);
+			} else {
+				mPager.setCurrentItem(1);
+				mTcpClientService.setIconConnected(R.drawable.ic_stat_droid);
+				// maybe find more suitable icon for this state?
+				return true;
+			}
+		} else { // here for forward-backward compatibility propuse
 			mPager.setCurrentItem(0);
 			mTcpClientService.setIconConnected(R.drawable.ic_stat_mouse);
 			return true;
@@ -362,16 +374,27 @@ public class ScratchpadActivity extends FragmentActivity {
 
 		@Override
 		public Fragment getItem(int position) {
-			if (mouse == null) {
-				Log.d(TAG, "mouse was null");
-				mouse = new MousepadActivity();
+			Log.e(TAG, "going to position: " + Integer.toString(position));
+			switch (position) {
+			case 1:
+				if (quickLaunch == null) {
+					Log.d(TAG, "quick launch null");
+					quickLaunch = new QuickLaunchActivity();
+				}
+				return (Fragment) quickLaunch;
+			case 0:
+			default:
+				if (mouse == null) {
+					Log.d(TAG, "mouse was null");
+					mouse = new MousepadActivity();
+				}
+				return (Fragment) mouse;
 			}
-			return (Fragment) mouse;
 		}
 
 		@Override
 		public int getCount() {
-			return 1;
+			return 2;
 		}
 	}
 
