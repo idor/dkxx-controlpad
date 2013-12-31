@@ -18,9 +18,11 @@
 
     <!-- Adds an item to the list. -->
     <item
-        android:id="@+id/action_previous"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/action_previous"/>
+        android:id="@+id/action_bar_settings"
+        android:icon="@drawable/ic_action_settings"
+        android:showAsAction="always"
+        android:title="@string/action_bar_settings"/>
+
     <!--
     <item
         android:id="@+id/action_next"

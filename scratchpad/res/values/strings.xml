@@ -13,10 +13,11 @@
     <string name="title_activity_mousepad">Lumus Mousepad</string>
     <string name="title_activity_scratchpad">Lumus Scratchpad</string>
 
-    <!-- Actions -->
+    <!-- Pager Labels -->
     <string name="action_previous">Mousepad</string>
     <string name="action_next">Touchpad</string>
     <string name="action_keyboard">Keypad</string>
+    <string name="action_bar_settings">Settings</string>
 
     <!-- PD40 TCP Client Service -->
     <string name="pd40tcp_service_label">PD40 Connection Service</string>
