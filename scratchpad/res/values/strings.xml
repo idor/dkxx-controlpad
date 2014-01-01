@@ -27,4 +27,10 @@
     <string name="pd40tcp_service_disconnected">Disconnected</string>
     <string name="pd40tcp_service_stopped">Stopped</string>
 
+    <!-- Technician EditText hints -->
+    <string name="editQuicklaunchText">Button label</string>
+    <string name="editQuicklaunchAction">Action</string>
+    <string name="editQuicklaunchPackage">Package</string>
+    <string name="editQuicklaunchActivityName">Activity</string>
+
 </resources>
