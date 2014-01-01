@@ -37,6 +37,7 @@ public class ScratchpadActivity extends FragmentActivity {
 	private static final int brightnessTimeout = 5000;
 	private Fragment mouse = new MousepadActivity();
 	private Fragment quickLaunch = new QuickLaunchActivity();
+	private Fragment technician = new TechnicianActivity();
 	private boolean mTcpServiceBound = false;
 	private ServiceConnection mTcpClientConnection = null;
 	private PD40TcpClientService mTcpClientService = null;
@@ -259,14 +260,11 @@ public class ScratchpadActivity extends FragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == R.id.action_bar_settings) {
-			if (mPager.getCurrentItem() == 1) {
+			if (mPager.getCurrentItem() < 2) {
+				mPager.setCurrentItem(1 + mPager.getCurrentItem());
+			} else {
 				mPager.setCurrentItem(0);
 				mTcpClientService.setIconConnected(R.drawable.ic_stat_mouse);
-			} else {
-				mPager.setCurrentItem(1);
-				mTcpClientService.setIconConnected(R.drawable.ic_stat_droid);
-				// maybe find more suitable icon for this state?
-				return true;
 			}
 		} else { // here for forward-backward compatibility propuse
 			mPager.setCurrentItem(0);
@@ -376,6 +374,12 @@ public class ScratchpadActivity extends FragmentActivity {
 		public Fragment getItem(int position) {
 			Log.e(TAG, "going to position: " + Integer.toString(position));
 			switch (position) {
+			case 2:
+				if (technician == null) {
+					Log.d(TAG, "quick launch null");
+					technician = new TechnicianActivity();
+				}
+				return (Fragment) technician;
 			case 1:
 				if (quickLaunch == null) {
 					Log.d(TAG, "quick launch null");
@@ -394,7 +398,7 @@ public class ScratchpadActivity extends FragmentActivity {
 
 		@Override
 		public int getCount() {
-			return 2;
+			return 3;
 		}
 	}
 
