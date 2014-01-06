@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,10 +38,20 @@ public class TechnicianActivity extends Fragment {
 	}
 
 	private void bindButtonsToConfigFile() {
+		final Context ctx = this.getActivity();
+		OnLongClickListener mLongClickListener = new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				// TODO Auto-generated method stub
+				onQuickLauncherLongClick(v);
+				return true;
+			}
+		};
 		OnClickListener mClickListener = new OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				onQuickLauncherClick(v);
+				Toast.makeText(ctx, "Hold Key to bind action", Toast.LENGTH_SHORT).show();
 			}
 		};
 
@@ -58,7 +69,7 @@ public class TechnicianActivity extends Fragment {
 		tmp = "GyroCompass,ACTION_MAIN,fi.finwe.gyrocompass,Compass";
 		intentStrings.add(pref.getString("6", tmp).split(","));
 
-		tmp = "Skype,ACTION_MAIN,com.skype.raider,Main";
+		tmp = "DynamicArrow,ACTION_MAIN,com.example.dynamicarrows,MainActivity";
 		intentStrings.add(pref.getString("7", tmp).split(","));
 		prefEditor.commit();
 
@@ -66,21 +77,25 @@ public class TechnicianActivity extends Fragment {
 		Button b = (Button) rootView.findViewById(R.id.quickLauncherButton1);
 		b.setText(intentStrings.get(0)[0]);
 		b.setOnClickListener(mClickListener);
+		b.setOnLongClickListener(mLongClickListener);
 
 		b = (Button) rootView.findViewById(R.id.quickLauncherButton2);
 		b.setText(intentStrings.get(1)[0]);
 		b.setOnClickListener(mClickListener);
+		b.setOnLongClickListener(mLongClickListener);
 
 		b = (Button) rootView.findViewById(R.id.quickLauncherButton3);
 		b.setText(intentStrings.get(2)[0]);
 		b.setOnClickListener(mClickListener);
+		b.setOnLongClickListener(mLongClickListener);
 
 		b = (Button) rootView.findViewById(R.id.quickLauncherButton4);
 		b.setText(intentStrings.get(3)[0]);
 		b.setOnClickListener(mClickListener);
+		b.setOnLongClickListener(mLongClickListener);
 	}
 
-	public void onQuickLauncherClick(View view) {
+	public void onQuickLauncherLongClick(View view) {
 		Vector<String> intentFieldsVector = new Vector<String>();
 		intentFieldsVector.add(((EditText) rootView
 				.findViewById(R.id.editQuicklaunchText)).getEditableText()
