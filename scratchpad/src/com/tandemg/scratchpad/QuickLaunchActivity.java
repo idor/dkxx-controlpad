@@ -40,45 +40,58 @@ public class QuickLaunchActivity extends Fragment {
 		// Text,Packege,Activity,Action
 		SharedPreferences.Editor prefEditor = pref.edit();
 
-		String tmp = "ADE,ACTION_MAIN,com.example.hellopanoramagl,MainActivity";
-		intentStrings.add(pref.getString("0", tmp).split(","));
-		prefEditor.putString("0", pref.getString("0", tmp)); // will generate
+		String tmp = "ADE-P1,PIC1,com.example.hellopanoramagl,MainActivity";
+		intentStrings.add(pref.getString("1", tmp).split(","));
+		prefEditor.putString("1", pref.getString("1", tmp)); // will generate
 																// the file
 																// template on
 																// first run
-
-		tmp = "Lumus Demo,ACTION_MAIN,com.tandemg.pd40demo,MainActivity";
-		intentStrings.add(pref.getString("1", tmp).split(","));
-
-		tmp = "Image Capture,android.media.action.IMAGE_CAPTURE, , ";
+		tmp = "ADE-P2,PIC2,com.example.hellopanoramagl,MainActivity";
 		intentStrings.add(pref.getString("2", tmp).split(","));
 
-		tmp = "GyroCompass,ACTION_MAIN,fi.finwe.gyrocompass,Compass";
+		tmp = "ADE-P3,PIC3,com.example.hellopanoramagl,MainActivity";
 		intentStrings.add(pref.getString("3", tmp).split(","));
 
-		tmp = "Skype,ACTION_MAIN,com.skype.raider,Main";
+		tmp = "Lumus Demo,ACTION_MAIN,com.tandemg.pd40demo,MainActivity";
 		intentStrings.add(pref.getString("4", tmp).split(","));
+
+		tmp = "Image Capture,android.media.action.IMAGE_CAPTURE, , ";
+		intentStrings.add(pref.getString("5", tmp).split(","));
+
+		tmp = "GyroCompass,ACTION_MAIN,fi.finwe.gyrocompass,Compass";
+		intentStrings.add(pref.getString("6", tmp).split(","));
+		
+		tmp = "DynamicArrow,ACTION_MAIN,com.example.dynamicarrows,MainActivity";
+		intentStrings.add(pref.getString("7", tmp).split(","));
 		prefEditor.commit();
 
 		// bind Buttons to text and clickListeners.
-		Button b = (Button) rootView.findViewById(R.id.quickLauncherButton0);
+		Button b = (Button) rootView.findViewById(R.id.quickLauncherButtonADE1);
 		b.setText(intentStrings.get(0)[0]);
 		b.setOnClickListener(mClickListener);
-
-		b = (Button) rootView.findViewById(R.id.quickLauncherButton1);
+		// bind Buttons to text and clickListeners.
+		b = (Button) rootView.findViewById(R.id.quickLauncherButtonADE2);
 		b.setText(intentStrings.get(1)[0]);
 		b.setOnClickListener(mClickListener);
-
-		b = (Button) rootView.findViewById(R.id.quickLauncherButton2);
+		// bind Buttons to text and clickListeners.
+		b = (Button) rootView.findViewById(R.id.quickLauncherButtonADE3);
 		b.setText(intentStrings.get(2)[0]);
 		b.setOnClickListener(mClickListener);
 
-		b = (Button) rootView.findViewById(R.id.quickLauncherButton3);
+		b = (Button) rootView.findViewById(R.id.quickLauncherButton1);
 		b.setText(intentStrings.get(3)[0]);
 		b.setOnClickListener(mClickListener);
 
-		b = (Button) rootView.findViewById(R.id.quickLauncherButton4);
+		b = (Button) rootView.findViewById(R.id.quickLauncherButton2);
 		b.setText(intentStrings.get(4)[0]);
+		b.setOnClickListener(mClickListener);
+
+		b = (Button) rootView.findViewById(R.id.quickLauncherButton3);
+		b.setText(intentStrings.get(5)[0]);
+		b.setOnClickListener(mClickListener);
+
+		b = (Button) rootView.findViewById(R.id.quickLauncherButton4);
+		b.setText(intentStrings.get(6)[0]);
 		b.setOnClickListener(mClickListener);
 		return rootView;
 	}
@@ -87,21 +100,25 @@ public class QuickLaunchActivity extends Fragment {
 													// validation, strings are
 													// dangerous
 		String[] tmp = null;
-		if (view.getId() == R.id.quickLauncherButton0) {
+		if (view.getId() == R.id.quickLauncherButtonADE1) {
 			tmp = intentStrings.get(0);
-		} else if (view.getId() == R.id.quickLauncherButton1) {
+		} else if (view.getId() == R.id.quickLauncherButtonADE2) {
 			tmp = intentStrings.get(1);
-		} else if (view.getId() == R.id.quickLauncherButton2) {
+		} else if (view.getId() == R.id.quickLauncherButtonADE3) {
 			tmp = intentStrings.get(2);
-		} else if (view.getId() == R.id.quickLauncherButton3) {
+		} else if (view.getId() == R.id.quickLauncherButton1) {
 			tmp = intentStrings.get(3);
-		} else if (view.getId() == R.id.quickLauncherButton4) {
+		} else if (view.getId() == R.id.quickLauncherButton2) {
 			tmp = intentStrings.get(4);
+		} else if (view.getId() == R.id.quickLauncherButton3) {
+			tmp = intentStrings.get(5);
+		} else if (view.getId() == R.id.quickLauncherButton4) {
+			tmp = intentStrings.get(6);
 		}
 		if (tmp != null) {
 			((ScratchpadActivity) getActivity()).getTcpService()
 					.notifyStartIntent(tmp[1], tmp[2], tmp[3]);
-			Log.e(TAG, "Intent Launched. Action: " + tmp[1] + ", Packege: "
+			Log.i(TAG, "Intent Launched. Action: " + tmp[1] + ", Packege: "
 					+ tmp[2] + ", Activity: " + tmp[3]);
 		} else {
 			Log.e(TAG, "Intent string was empty, no app was launched");

@@ -10,12 +10,6 @@
     tools:context=".TechnicianActivity" >
 
     <Button
-        android:id="@+id/quickLauncherButton0"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onQuickLauncherClick" />
-
-    <Button
         android:id="@+id/quickLauncherButton1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,7 +38,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="@string/editQuicklaunchText"
-            android:inputType="textNoSuggestions" />
+            android:inputType="textNoSuggestions"/>
+    
     <EditText
             android:id="@+id/editQuicklaunchAction"
             android:layout_width="fill_parent"

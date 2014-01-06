@@ -9,11 +9,38 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MousepadActivity" >
 
+    
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    tools:context=".MousepadActivity" >
+    
     <Button
-        android:id="@+id/quickLauncherButton0"
-        android:layout_width="match_parent"
+        android:id="@+id/quickLauncherButtonADE1"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:onClick="onQuickLauncherClick" />
+        android:layout_weight="1"
+        android:onClick="onQuickLauncherClick"
+        android:text="ADE1" />
+    
+    <Button
+        android:id="@+id/quickLauncherButtonADE2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:onClick="onQuickLauncherClick"
+        android:text="ADE2" />
+    
+    <Button
+        android:id="@+id/quickLauncherButtonADE3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:onClick="onQuickLauncherClick"
+        android:text="ADE3" />
+        
+        </LinearLayout>
 
     <Button
         android:id="@+id/quickLauncherButton1"

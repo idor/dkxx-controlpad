@@ -49,45 +49,34 @@ public class TechnicianActivity extends Fragment {
 		// Text,Packege,Activity,Action
 		prefEditor = pref.edit();
 
-		String tmp = "ADE,ACTION_MAIN,com.example.hellopanoramagl,MainActivity";
-		intentStrings.add(pref.getString("0", tmp).split(","));
-		prefEditor.putString("0", pref.getString("0", tmp)); // will generate
-																// the file
-																// template on
-																// first run
-
-		tmp = "Lumus Demo,ACTION_MAIN,com.tandemg.pd40demo,MainActivity";
-		intentStrings.add(pref.getString("1", tmp).split(","));
+		String tmp = "Lumus Demo,ACTION_MAIN,com.tandemg.pd40demo,MainActivity";
+		intentStrings.add(pref.getString("4", tmp).split(","));
 
 		tmp = "Image Capture,android.media.action.IMAGE_CAPTURE, , ";
-		intentStrings.add(pref.getString("2", tmp).split(","));
+		intentStrings.add(pref.getString("5", tmp).split(","));
 
 		tmp = "GyroCompass,ACTION_MAIN,fi.finwe.gyrocompass,Compass";
-		intentStrings.add(pref.getString("3", tmp).split(","));
+		intentStrings.add(pref.getString("6", tmp).split(","));
 
 		tmp = "Skype,ACTION_MAIN,com.skype.raider,Main";
-		intentStrings.add(pref.getString("4", tmp).split(","));
+		intentStrings.add(pref.getString("7", tmp).split(","));
 		prefEditor.commit();
 
 		// bind Buttons to text and clickListeners.
-		Button b = (Button) rootView.findViewById(R.id.quickLauncherButton0);
+		Button b = (Button) rootView.findViewById(R.id.quickLauncherButton1);
 		b.setText(intentStrings.get(0)[0]);
 		b.setOnClickListener(mClickListener);
 
-		b = (Button) rootView.findViewById(R.id.quickLauncherButton1);
+		b = (Button) rootView.findViewById(R.id.quickLauncherButton2);
 		b.setText(intentStrings.get(1)[0]);
 		b.setOnClickListener(mClickListener);
 
-		b = (Button) rootView.findViewById(R.id.quickLauncherButton2);
+		b = (Button) rootView.findViewById(R.id.quickLauncherButton3);
 		b.setText(intentStrings.get(2)[0]);
 		b.setOnClickListener(mClickListener);
 
-		b = (Button) rootView.findViewById(R.id.quickLauncherButton3);
-		b.setText(intentStrings.get(3)[0]);
-		b.setOnClickListener(mClickListener);
-
 		b = (Button) rootView.findViewById(R.id.quickLauncherButton4);
-		b.setText(intentStrings.get(4)[0]);
+		b.setText(intentStrings.get(3)[0]);
 		b.setOnClickListener(mClickListener);
 	}
 
@@ -108,21 +97,18 @@ public class TechnicianActivity extends Fragment {
 
 		String buttonId;
 		switch (view.getId()) {
-		case R.id.quickLauncherButton0:
-			buttonId = "0";
-			break;
 		case R.id.quickLauncherButton1:
-			buttonId = "1";
+			buttonId = "4";
 			break;
 		case R.id.quickLauncherButton2:
-			buttonId = "2";
+			buttonId = "5";
 			break;
 		case R.id.quickLauncherButton3:
-			buttonId = "3";
+			buttonId = "6";
 			break;
 		case R.id.quickLauncherButton4:
 		default:
-			buttonId = "4";
+			buttonId = "7";
 		}
 
 		if (!intentFieldsVector.elementAt(0).isEmpty()) {
@@ -135,13 +121,13 @@ public class TechnicianActivity extends Fragment {
 				bindButtonsToConfigFile();
 			} else {
 				Toast.makeText(this.getActivity(),
-						"Action is missing - Aborting", Toast.LENGTH_SHORT)
+						"Action is missing", Toast.LENGTH_SHORT)
 						.show();
 				Log.i(TAG, "Action is missing while assigning Button #"
 						+ buttonId);
 			}
 		} else {
-			Toast.makeText(this.getActivity(), "Label is missing - Aborting",
+			Toast.makeText(this.getActivity(), "Label is missing",
 					Toast.LENGTH_SHORT).show();
 			Log.i(TAG, "Label is missing while assigning Button #" + buttonId);
 		}
