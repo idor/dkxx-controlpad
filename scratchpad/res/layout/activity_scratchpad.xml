@@ -42,12 +42,14 @@
         android:gravity="bottom"
         android:orientation="horizontal" >
 
-        <ImageView
-            android:id="@+id/place_holder1"
+        <TextView
+            android:id="@+id/battery_status"
             android:layout_width="45dp"
             android:layout_height="match_parent"
-            android:alpha="0"
-            android:src="@drawable/ic_menu_back" />
+            android:gravity="center_vertical"
+            android:text=""
+            android:textColor="@drawable/dim_gray"
+            android:textSize="32dp" />
 
         <ImageButton
             android:id="@+id/button_back"

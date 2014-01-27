@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
@@ -113,6 +114,9 @@ public class ScratchpadActivity extends FragmentActivity {
 			case 'G':
 				recievedGlassBrightness(Integer.parseInt(temp[1]));
 				break;
+			case 'S':
+				recievedGlassBatteryStatus(Integer.parseInt(temp[1]));
+				break;
 			}
 		}
 	}
@@ -180,6 +184,7 @@ public class ScratchpadActivity extends FragmentActivity {
 					Thread.sleep(2000, 0);
 					while (true) {
 						getGlassBrightness();
+						getGlassBatteryStatus();
 						Thread.sleep(brightnessTimeout, 0);
 					}
 				} catch (InterruptedException e) {
@@ -423,10 +428,35 @@ public class ScratchpadActivity extends FragmentActivity {
 		});
 	}
 
+	public void recievedGlassBatteryStatus(int value) {
+		final TextView batteryTextView = (TextView) findViewById(R.id.battery_status);
+		final int tmpValue = value;
+		runOnUiThread(new Runnable() {
+			public void run() {
+				if (tmpValue > 99 || tmpValue < 0) { // value range [0,100]
+					batteryTextView.setText("");
+					return;
+				}
+				Integer.toString(tmpValue);
+				batteryTextView.setText(Integer.toString(tmpValue));
+			}
+		});
+	}
+
 	public void getGlassBrightness() {
 		try {
 			if (mTcpClientService != null)
 				mTcpClientService.notifyBrightnessGet();
+		} catch (Exception e) {
+			Log.e(TAG, "Error: " + e.toString(), e);
+			e.printStackTrace();
+		}
+	}
+
+	public void getGlassBatteryStatus() {
+		try {
+			if (mTcpClientService != null)
+				mTcpClientService.notifyBatteryGet();
 		} catch (Exception e) {
 			Log.e(TAG, "Error: " + e.toString(), e);
 			e.printStackTrace();
