@@ -701,6 +701,11 @@ public class PD40TcpClientService extends Service {
 		this.sendMessage(MessageTypes.GET_BRIGHTNESS);
 	}
 
+	public void notifyBatteryGet() {
+		// battery capacity values are [0,100]
+		this.sendMessage(MessageTypes.GET_BATTERY);
+	}
+
 	public void notifyKeyboardChar(String text) {
 		this.sendMessage(MessageTypes.MSG_KEYBOARD_CLICK + " " + text);
 	}

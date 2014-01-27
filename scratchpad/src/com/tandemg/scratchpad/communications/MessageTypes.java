@@ -31,6 +31,9 @@ public class MessageTypes {
 	public static final String POST_BRIGHTNESS = "P";
 	public static final String GET_BRIGHTNESS = "G";
 
+	// battery Message
+	public static final String GET_BATTERY = "S";
+
 	// keyboard message
 	public static final String MSG_KEYBOARD_CLICK = "k";
 }
