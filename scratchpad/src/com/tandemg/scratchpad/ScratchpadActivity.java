@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v13.app.FragmentStatePagerAdapter;
@@ -116,6 +117,7 @@ public class ScratchpadActivity extends FragmentActivity {
 				break;
 			case 'S':
 				recievedGlassBatteryStatus(Integer.parseInt(temp[1]));
+				recievedGlassBatteryState(Integer.parseInt(temp[2]));
 				break;
 			}
 		}
@@ -439,6 +441,20 @@ public class ScratchpadActivity extends FragmentActivity {
 				}
 				Integer.toString(tmpValue);
 				batteryTextView.setText(Integer.toString(tmpValue));
+			}
+		});
+	}
+
+	public void recievedGlassBatteryState(int value) {
+		final TextView batteryTextView = (TextView) findViewById(R.id.battery_status);
+		final int tmpValue = value;
+		runOnUiThread(new Runnable() {
+			public void run() {
+				if (tmpValue == 1) {
+					batteryTextView.setBackgroundColor(Color.GREEN);
+					return;
+				}
+				batteryTextView.setBackgroundColor(Color.WHITE);
 			}
 		});
 	}
