@@ -36,4 +36,8 @@ public class MessageTypes {
 
 	// keyboard message
 	public static final String MSG_KEYBOARD_CLICK = "k";
+
+	// Power Button
+	public static final String EV_PWR_BTN_PRESS = "w";
+	public static final String EV_PWR_BTN_RELEASE = "W";
 }

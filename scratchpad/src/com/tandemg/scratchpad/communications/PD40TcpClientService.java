@@ -706,6 +706,14 @@ public class PD40TcpClientService extends Service {
 		this.sendMessage(MessageTypes.GET_BATTERY);
 	}
 
+	public void notifyPowerButtonDown() {
+		this.sendMessage(MessageTypes.EV_PWR_BTN_PRESS);
+	}
+
+	public void notifyPowerButtonUp() {
+		this.sendMessage(MessageTypes.EV_PWR_BTN_RELEASE);
+	}
+
 	public void notifyKeyboardChar(String text) {
 		this.sendMessage(MessageTypes.MSG_KEYBOARD_CLICK + " " + text);
 	}
