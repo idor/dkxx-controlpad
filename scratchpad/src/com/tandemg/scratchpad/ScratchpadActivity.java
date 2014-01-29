@@ -20,7 +20,9 @@ import android.text.Editable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.SeekBar;
@@ -177,6 +179,23 @@ public class ScratchpadActivity extends FragmentActivity {
 				// TODO Auto-generated method stub
 			}
 
+		});
+
+		TextView powerButton = ((TextView) findViewById(R.id.battery_status));
+		powerButton.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+					Log.d("Pressed", "Button pressed");
+					mTcpClientService.notifyPowerButtonDown();
+					return true;
+				} else if (event.getAction() == MotionEvent.ACTION_UP) {
+					Log.d("Released", "Button released");
+					mTcpClientService.notifyPowerButtonUp();
+					return true;
+				}
+				return false;
+			}
 		});
 
 		brightnessDeamonThread = new Thread(new Runnable() {
