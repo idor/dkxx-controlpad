@@ -121,6 +121,12 @@ public class ScratchpadActivity extends FragmentActivity {
 				recievedGlassBatteryStatus(Integer.parseInt(temp[1]));
 				recievedGlassBatteryState(Integer.parseInt(temp[2]));
 				break;
+			case 'P':
+				/*
+				 * TODO: add action on POST request returned, it's syntax is:
+				 * "P [1|0 - 1 for success ] [int-currentValue]"
+				 */
+				break;
 			}
 		}
 	}
