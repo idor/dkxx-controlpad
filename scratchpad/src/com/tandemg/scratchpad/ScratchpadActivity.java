@@ -187,23 +187,6 @@ public class ScratchpadActivity extends FragmentActivity {
 
 		});
 
-		TextView powerButton = ((TextView) findViewById(R.id.battery_status));
-		powerButton.setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_DOWN) {
-					Log.d("Pressed", "Button pressed");
-					mTcpClientService.notifyPowerButtonDown();
-					return true;
-				} else if (event.getAction() == MotionEvent.ACTION_UP) {
-					Log.d("Released", "Button released");
-					mTcpClientService.notifyPowerButtonUp();
-					return true;
-				}
-				return false;
-			}
-		});
-
 		brightnessDeamonThread = new Thread(new Runnable() {
 			@Override
 			public void run() {

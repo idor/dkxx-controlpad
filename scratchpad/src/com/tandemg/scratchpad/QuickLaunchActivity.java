@@ -8,10 +8,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 public class QuickLaunchActivity extends Fragment {
 	private static final String TAG = "QuickLaunchActivity";
@@ -93,6 +96,26 @@ public class QuickLaunchActivity extends Fragment {
 		b = (Button) rootView.findViewById(R.id.quickLauncherButton4);
 		b.setText(intentStrings.get(6)[0]);
 		b.setOnClickListener(mClickListener);
+
+		ImageButton imgBtn = (ImageButton) rootView
+				.findViewById(R.id.quickLauncherShutdown);
+		imgBtn.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+					Log.d("Pressed", "Button pressed");
+					((ScratchpadActivity) getActivity()).getTcpService()
+							.notifyPowerButtonDown();
+					return true;
+				} else if (event.getAction() == MotionEvent.ACTION_UP) {
+					Log.d("Released", "Button released");
+					((ScratchpadActivity) getActivity()).getTcpService()
+							.notifyPowerButtonUp();
+					return true;
+				}
+				return false;
+			}
+		});
 		return rootView;
 	}
 

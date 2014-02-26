@@ -66,4 +66,12 @@
         android:layout_height="wrap_content"
         android:onClick="onQuickLauncherClick" />
 
+    <ImageButton
+        android:id="@+id/quickLauncherShutdown"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="Power Button"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_shutdown" />
+
 </LinearLayout>
