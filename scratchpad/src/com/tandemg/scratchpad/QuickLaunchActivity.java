@@ -63,9 +63,15 @@ public class QuickLaunchActivity extends Fragment {
 
 		tmp = "GyroCompass,ACTION_MAIN,fi.finwe.gyrocompass,Compass";
 		intentStrings.add(pref.getString("6", tmp).split(","));
-		
+
 		tmp = "DynamicArrow,ACTION_MAIN,com.example.dynamicarrows,MainActivity";
 		intentStrings.add(pref.getString("7", tmp).split(","));
+
+		tmp = "Gestures client,ACTION_MAIN,eyesight.service.client,EyeSightClientActivity";
+		intentStrings.add(pref.getString("8", tmp).split(","));
+
+		tmp = "Gestures Demo,ACTION_MAIN,air.ESGlassesCallnderanimation05,AppEntry";
+		intentStrings.add(pref.getString("9", tmp).split(","));
 		prefEditor.commit();
 
 		// bind Buttons to text and clickListeners.
@@ -95,6 +101,14 @@ public class QuickLaunchActivity extends Fragment {
 
 		b = (Button) rootView.findViewById(R.id.quickLauncherButton4);
 		b.setText(intentStrings.get(6)[0]);
+		b.setOnClickListener(mClickListener);
+
+		b = (Button) rootView.findViewById(R.id.quickLauncherButton5);
+		b.setText(intentStrings.get(7)[0]);
+		b.setOnClickListener(mClickListener);
+
+		b = (Button) rootView.findViewById(R.id.quickLauncherButton6);
+		b.setText(intentStrings.get(8)[0]);
 		b.setOnClickListener(mClickListener);
 
 		ImageButton imgBtn = (ImageButton) rootView
@@ -137,6 +151,10 @@ public class QuickLaunchActivity extends Fragment {
 			tmp = intentStrings.get(5);
 		} else if (view.getId() == R.id.quickLauncherButton4) {
 			tmp = intentStrings.get(6);
+		} else if (view.getId() == R.id.quickLauncherButton5) {
+			tmp = intentStrings.get(7);
+		} else if (view.getId() == R.id.quickLauncherButton6) {
+			tmp = intentStrings.get(8);
 		}
 		if (tmp != null) {
 			((ScratchpadActivity) getActivity()).getTcpService()
