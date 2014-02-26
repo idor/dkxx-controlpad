@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v13.app.FragmentStatePagerAdapter;
@@ -443,12 +444,12 @@ public class ScratchpadActivity extends FragmentActivity {
 		final int tmpValue = value;
 		runOnUiThread(new Runnable() {
 			public void run() {
-				if (tmpValue > 99 || tmpValue < 0) { // value range [0,100]
-					batteryTextView.setText("");
+				if (tmpValue > 99) { // value range [0,100]
+					batteryTextView.setText("100");
 					return;
 				}
 				Integer.toString(tmpValue);
-				batteryTextView.setText(Integer.toString(tmpValue));
+				batteryTextView.setText(Integer.toString(tmpValue) + "%");
 			}
 		});
 	}
@@ -459,10 +460,10 @@ public class ScratchpadActivity extends FragmentActivity {
 		runOnUiThread(new Runnable() {
 			public void run() {
 				if (tmpValue == 1) {
-					batteryTextView.setBackgroundColor(Color.GREEN);
+					batteryTextView.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
 					return;
 				}
-				batteryTextView.setBackgroundColor(Color.WHITE);
+				batteryTextView.setPaintFlags(Paint.LINEAR_TEXT_FLAG);
 			}
 		});
 	}
