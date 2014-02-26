@@ -195,8 +195,9 @@ public class ScratchpadActivity extends FragmentActivity {
 					Thread.sleep(2000, 0);
 					while (true) {
 						getGlassBrightness();
+						Thread.sleep(brightnessTimeout / 2, 0);
 						getGlassBatteryStatus();
-						Thread.sleep(brightnessTimeout, 0);
+						Thread.sleep(brightnessTimeout / 2, 0);
 					}
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
