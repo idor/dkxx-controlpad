@@ -61,6 +61,8 @@ public class ScratchpadActivity extends FragmentActivity {
 	 * The pager adapter, which provides the pages to the view pager widget.
 	 */
 	private PagerAdapter mPagerAdapter;
+	private long mBatteryUpadateTimestamp = 0;
+	final private long mBatteryUpdateTimeout = 9999;
 
 	public ScratchpadActivity() {
 		handler = new DataHandler();
@@ -121,6 +123,8 @@ public class ScratchpadActivity extends FragmentActivity {
 			case 'S':
 				recievedGlassBatteryStatus(Integer.parseInt(temp[1]));
 				recievedGlassBatteryState(Integer.parseInt(temp[2]));
+				/* update battery-timestamp every battert status event */
+				mBatteryUpadateTimestamp = System.currentTimeMillis();
 				break;
 			case 'P':
 				/*
@@ -198,6 +202,18 @@ public class ScratchpadActivity extends FragmentActivity {
 						Thread.sleep(brightnessTimeout / 2, 0);
 						getGlassBatteryStatus();
 						Thread.sleep(brightnessTimeout / 2, 0);
+						/*
+						 * a simple watchdog timer, mBatteryUpadateTimestamp is
+						 * updated every battery status update. if for 10
+						 * seconds battery will not get an update, thus the
+						 * screen indication is faulty, and will be cleared.
+						 */
+						if (System.currentTimeMillis()
+								- mBatteryUpadateTimestamp > mBatteryUpdateTimeout) {
+							Log.e(TAG,
+									"Scratchpad did not recieve battery status for 10 seconds, clearing battery status indication");
+							clearGlassBatteryStatusOrState();
+						}
 					}
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -451,6 +467,15 @@ public class ScratchpadActivity extends FragmentActivity {
 				}
 				Integer.toString(tmpValue);
 				batteryTextView.setText(Integer.toString(tmpValue) + "%");
+			}
+		});
+	}
+
+	public void clearGlassBatteryStatusOrState() {
+		final TextView batteryTextView = (TextView) findViewById(R.id.battery_status);
+		runOnUiThread(new Runnable() {
+			public void run() {
+				batteryTextView.setText("");
 			}
 		});
 	}
