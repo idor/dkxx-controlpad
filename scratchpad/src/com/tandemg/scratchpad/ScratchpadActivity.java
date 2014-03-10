@@ -281,7 +281,7 @@ public class ScratchpadActivity extends FragmentActivity {
 				mTcpClientService.setIconConnected(R.drawable.ic_stat_mouse);
 			} else {
 				mPager.setCurrentItem(1);
-				mTcpClientService.setIconConnected(R.drawable.ic_stat_droid);
+				mTcpClientService.setIconConnected(R.drawable.ic_stat_mouse);
 				// maybe find more suitable icon for this state?
 				return true;
 			}
