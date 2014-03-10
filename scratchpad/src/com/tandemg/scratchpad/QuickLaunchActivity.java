@@ -111,9 +111,9 @@ public class QuickLaunchActivity extends Fragment {
 		b.setText(intentStrings.get(8)[0]);
 		b.setOnClickListener(mClickListener);
 
-		ImageButton imgBtn = (ImageButton) rootView
-				.findViewById(R.id.quickLauncherShutdown);
-		imgBtn.setOnTouchListener(new OnTouchListener() {
+		/* set shutdown button functionality */
+		Button btn = (Button) rootView.findViewById(R.id.quickLauncherShutdown);
+		btn.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
