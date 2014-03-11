@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -239,7 +240,7 @@ public class ScratchpadActivity extends FragmentActivity {
 
 	@Override
 	protected void onStart() {
-		Log.d(TAG, "start");
+		Log.d(TAG, "onStart, with Version: v" + getAppVersionName());
 		super.onStart();
 	}
 
@@ -269,6 +270,16 @@ public class ScratchpadActivity extends FragmentActivity {
 	protected void onRestart() {
 		Log.d(TAG, "restart");
 		super.onRestart();
+	}
+
+	public String getAppVersionName() {
+		try {
+			return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "Error - NameNotFound";
+		}
 	}
 
 	@Override
