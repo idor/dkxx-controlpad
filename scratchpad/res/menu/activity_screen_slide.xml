@@ -21,7 +21,7 @@
         android:id="@+id/action_bar_settings"
         android:icon="@drawable/ic_action_settings"
         android:showAsAction="always"
-        android:title="@string/action_bar_settings"/>
+        android:title="@string/app_version"/>
 
     <!--
     <item
