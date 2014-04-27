@@ -117,22 +117,27 @@ public class ScratchpadActivity extends FragmentActivity {
 			com.tandemg.scratchpad.communications.PD40TcpClientService.DataHandler {
 		public void handleData(String data) {
 			String[] temp = data.split(" ");
-			switch (temp[0].charAt(0)) {
-			case 'G':
-				recievedGlassBrightness(Integer.parseInt(temp[1]));
-				break;
-			case 'S':
-				recievedGlassBatteryStatus(Integer.parseInt(temp[1]));
-				recievedGlassBatteryState(Integer.parseInt(temp[2]));
-				/* update battery-timestamp every battert status event */
-				mBatteryUpadateTimestamp = System.currentTimeMillis();
-				break;
-			case 'P':
-				/*
-				 * TODO: add action on POST request returned, it's syntax is:
-				 * "P [1|0 - 1 for success ] [int-currentValue]"
-				 */
-				break;
+			try {
+				switch (temp[0].charAt(0)) {
+				case 'G':
+					recievedGlassBrightness(Integer.parseInt(temp[1]));
+					break;
+				case 'S':
+					recievedGlassBatteryStatus(Integer.parseInt(temp[1]));
+					recievedGlassBatteryState(Integer.parseInt(temp[2]));
+					/* update battery-timestamp every battert status event */
+					mBatteryUpadateTimestamp = System.currentTimeMillis();
+					break;
+				case 'P':
+					/*
+					 * TODO: add action on POST request returned, it's syntax
+					 * is: "P [1|0 - 1 for success ] [int-currentValue]"
+					 */
+					break;
+				}
+			} catch (NumberFormatException e) {
+				Log.d(TAG, "Failed to Parse the expected int: " + temp[1]
+						+ " or " + temp[2]);
 			}
 		}
 	}
