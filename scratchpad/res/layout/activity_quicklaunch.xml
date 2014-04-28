@@ -67,6 +67,13 @@
         android:onClick="onQuickLauncherClick" />
 
     <Button
+        android:id="@+id/OpgalMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onQuickLauncherClick"
+        android:text="Opgal" />
+
+    <Button
         android:id="@+id/quickLauncherButton5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

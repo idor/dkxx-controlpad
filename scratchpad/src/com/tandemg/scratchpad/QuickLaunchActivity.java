@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,6 +16,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 
 public class QuickLaunchActivity extends Fragment {
 	private static final String TAG = "QuickLaunchActivity";
@@ -130,6 +132,52 @@ public class QuickLaunchActivity extends Fragment {
 				return false;
 			}
 		});
+
+		/* set opgal button functionality */
+		b = (Button) rootView.findViewById(R.id.OpgalMenu);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				PopupMenu popup = new PopupMenu(getActivity(), (Button) view);
+				popup.getMenuInflater().inflate(R.menu.therm_app_menu,
+						popup.getMenu());
+				popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+					@Override
+					public boolean onMenuItemClick(MenuItem item) {
+						Log.i(TAG, "subMenu was pressed: " + item.getTitle());
+						String act = "", pckg = "", activity = "";
+						switch (item.getItemId()) {
+						case R.id.opgal1:
+							act = "START_CAPTURE";
+							break;
+						case R.id.opgal2:
+							act = "TOGGLE_CAM_VID";
+							break;
+						case R.id.opgal3:
+							act = "TOGGLE_IMAGING";
+							break;
+						default:
+							Log.e(TAG, "opgal#x - failed to decode button");
+						}
+						if (!act.isEmpty()) {
+							((ScratchpadActivity) getActivity())
+									.getTcpService().notifyBroadcastIntent(act,
+											pckg, activity);
+							Log.e(TAG, "Send broadcast Intent with action: "
+									+ act);
+						} else {
+							Log.e(TAG,
+									"OPGAL Intent string was empty, no app was launched");
+						}
+						return true;
+					}
+				});
+				popup.show();
+				return;
+			}
+
+		});
+
 		return rootView;
 	}
 
