@@ -7,6 +7,8 @@ public class MessageTypes {
 	public static final String MSG_HOME = "H";
 	public static final String MSG_OPTIONS = "O";
 	public static final String MSG_INTENT = "I";
+	public static final String MSG_BROADCAST_INTENT = "b";
+	public static final String MSG_SERVICE_INTENT = "s";
 	// touch messages
 	public static final String MSG_TOUCH_DOWN = "D";
 	public static final String MSG_TOUCH_MOVE = "M";

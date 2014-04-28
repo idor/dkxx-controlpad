@@ -613,6 +613,18 @@ public class PD40TcpClientService extends Service {
 				+ " " + activity);
 	}
 
+	public void notifyStartServiceIntent(final String action, final String pkg,
+			final String activity) {
+		this.sendMessage(MessageTypes.MSG_SERVICE_INTENT + " " + action + " "
+				+ pkg + " " + activity);
+	}
+
+	public void notifyBroadcastIntent(final String action, final String pkg,
+			final String activity) {
+		this.sendMessage(MessageTypes.MSG_BROADCAST_INTENT + " " + action + " "
+				+ pkg + " " + activity);
+	}
+
 	public void notifyMouseMove(final int Xvalue, final int Yvalue) {
 		this.sendMessage(MessageTypes.MSG_MOUSE_CMD + " "
 				+ String.valueOf(MessageTypes.EV_MOVE) + " "
