@@ -23,6 +23,7 @@ public class QuickLaunchActivity extends Fragment {
 
 	private Vector<String[]> intentStrings;
 	private ViewGroup rootView;
+	Button opgalButton;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -134,8 +135,8 @@ public class QuickLaunchActivity extends Fragment {
 		});
 
 		/* set opgal button functionality */
-		b = (Button) rootView.findViewById(R.id.OpgalMenu);
-		b.setOnClickListener(new OnClickListener() {
+		opgalButton = (Button) rootView.findViewById(R.id.OpgalMenu);
+		opgalButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				PopupMenu popup = new PopupMenu(getActivity(), (Button) view);
@@ -156,10 +157,21 @@ public class QuickLaunchActivity extends Fragment {
 						case R.id.opgal3:
 							act = "TOGGLE_IMAGING";
 							break;
+						case R.id.opgal4:
+							act = "MAIN";
+							pckg = "com.thermapp";
+							activity = "MainActivity";
+							break;
 						default:
 							Log.e(TAG, "opgal#x - failed to decode button");
 						}
-						if (!act.isEmpty()) {
+						if (!(act.isEmpty() || pckg.isEmpty() || activity
+								.isEmpty())) {
+							((ScratchpadActivity) getActivity())
+									.getTcpService().notifyStartIntent(act,
+											pckg, activity);
+							Log.e(TAG, "Send start Intent with action: " + act);
+						} else if (!act.isEmpty()) {
 							((ScratchpadActivity) getActivity())
 									.getTcpService().notifyBroadcastIntent(act,
 											pckg, activity);
@@ -169,6 +181,7 @@ public class QuickLaunchActivity extends Fragment {
 							Log.e(TAG,
 									"OPGAL Intent string was empty, no app was launched");
 						}
+						opgalButton.callOnClick();
 						return true;
 					}
 				});
