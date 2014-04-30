@@ -70,10 +70,10 @@ public class QuickLaunchActivity extends Fragment {
 		tmp = "DynamicArrow,ACTION_MAIN,com.example.dynamicarrows,MainActivity";
 		intentStrings.add(pref.getString("7", tmp).split(","));
 
-		tmp = "Gestures client,ACTION_MAIN,eyesight.service.client,EyeSightClientActivity";
+		tmp = "Gesture client,ACTION_MAIN,eyesight.service.client,EyeSightClientActivity";
 		intentStrings.add(pref.getString("8", tmp).split(","));
 
-		tmp = "Gestures Demo,ACTION_MAIN,air.ESGlassesCallnderanimation05,AppEntry";
+		tmp = "Gesture Demo,ACTION_MAIN,air.ESGlassesCallnderanimation05,AppEntry";
 		intentStrings.add(pref.getString("9", tmp).split(","));
 		prefEditor.commit();
 
