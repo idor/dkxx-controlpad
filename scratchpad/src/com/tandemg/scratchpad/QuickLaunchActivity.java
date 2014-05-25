@@ -162,6 +162,12 @@ public class QuickLaunchActivity extends Fragment {
 							pckg = "com.thermapp";
 							activity = "MainActivity";
 							break;
+						case R.id.opgal5:
+							((ScratchpadActivity) getActivity())
+									.getTcpService().notifyPowerButtonDown();
+							((ScratchpadActivity) getActivity())
+									.getTcpService().notifyPowerButtonUp();
+							break;
 						default:
 							Log.e(TAG, "opgal#x - failed to decode button");
 						}
