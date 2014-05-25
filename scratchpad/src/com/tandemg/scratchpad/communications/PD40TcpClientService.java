@@ -729,4 +729,14 @@ public class PD40TcpClientService extends Service {
 	public void notifyKeyboardChar(String text) {
 		this.sendMessage(MessageTypes.MSG_KEYBOARD_CLICK + " " + text);
 	}
+
+	public void notifyVolumeUp() {
+		this.sendMessage(MessageTypes.MSG_GENERIC_KEYBOARD_BTN + " "
+				+ MessageTypes.MSG_GENERIC_KEYBOARD_BTN_VOLUMEUP);
+	}
+
+	public void notifyVolumeDown() {
+		this.sendMessage(MessageTypes.MSG_GENERIC_KEYBOARD_BTN + " "
+				+ MessageTypes.MSG_GENERIC_KEYBOARD_BTN_VOLUMEDOWN);
+	}
 }

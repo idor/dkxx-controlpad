@@ -39,6 +39,11 @@ public class MessageTypes {
 	// keyboard message
 	public static final String MSG_KEYBOARD_CLICK = "k";
 
+	// Volume message
+	public static final String MSG_GENERIC_KEYBOARD_BTN = "v";
+	public static final String MSG_GENERIC_KEYBOARD_BTN_VOLUMEDOWN = "94";
+	public static final String MSG_GENERIC_KEYBOARD_BTN_VOLUMEUP = "93";
+
 	// Power Button
 	public static final String EV_PWR_BTN_PRESS = "w";
 	public static final String EV_PWR_BTN_RELEASE = "W";

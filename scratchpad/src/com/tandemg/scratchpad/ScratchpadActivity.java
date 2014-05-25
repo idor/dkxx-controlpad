@@ -20,6 +20,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -408,6 +409,21 @@ public class ScratchpadActivity extends FragmentActivity {
 		dialog.getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 		dialog.show();
+	}
+
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		int keyCode = event.getKeyCode();
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_VOLUME_UP:
+			mTcpClientService.notifyVolumeUp();
+			return true;
+		case KeyEvent.KEYCODE_VOLUME_DOWN:
+			mTcpClientService.notifyVolumeDown();
+			return true;
+		default:
+			return super.dispatchKeyEvent(event);
+		}
 	}
 
 	/**
