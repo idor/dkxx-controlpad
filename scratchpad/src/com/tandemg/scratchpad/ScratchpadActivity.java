@@ -25,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -44,6 +45,7 @@ public class ScratchpadActivity extends FragmentActivity {
 	private static final int brightnessTimeout = 5000;
 	private Fragment mouse = new MousepadActivity();
 	private Fragment quickLaunch = new QuickLaunchActivity();
+	private Fragment wifiScanner = new ScanWifiActivity();
 	private boolean mTcpServiceBound = false;
 	private ServiceConnection mTcpClientConnection = null;
 	private PD40TcpClientService mTcpClientService = null;
@@ -160,6 +162,8 @@ public class ScratchpadActivity extends FragmentActivity {
 		VertSeekBar brightnessBar = (VertSeekBar) findViewById(R.id.brightness_bar);
 		brightnessBar.setProgress(50);
 		getGlassBrightness();
+		setBatteryOnLongClickListener();
+
 		brightnessBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress,
@@ -427,6 +431,12 @@ public class ScratchpadActivity extends FragmentActivity {
 					quickLaunch = new QuickLaunchActivity();
 				}
 				return (Fragment) quickLaunch;
+			case 2:
+				if (wifiScanner == null) {
+					Log.d(TAG, "wifiScanner was null");
+					wifiScanner = new ScanWifiActivity();
+				}
+				return (Fragment) wifiScanner;
 			case 0:
 			default:
 				if (mouse == null) {
@@ -439,7 +449,7 @@ public class ScratchpadActivity extends FragmentActivity {
 
 		@Override
 		public int getCount() {
-			return 2;
+			return 3;
 		}
 	}
 
@@ -514,6 +524,17 @@ public class ScratchpadActivity extends FragmentActivity {
 			Log.e(TAG, "Error: " + e.toString(), e);
 			e.printStackTrace();
 		}
+	}
+
+	public void setBatteryOnLongClickListener() {
+		final TextView batteryTextView = (TextView) findViewById(R.id.battery_status);
+		batteryTextView.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				mPager.setCurrentItem(2);
+				return false;
+			}
+		});
 	}
 
 	public void getGlassBatteryStatus() {
