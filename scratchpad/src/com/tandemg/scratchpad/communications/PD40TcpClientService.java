@@ -91,7 +91,7 @@ public class PD40TcpClientService extends Service {
 			setupNotification();
 			showNotificationStarted();
 		}
-		startServiceThread();
+		startServiceThread("");
 	}
 
 	@Override
@@ -120,6 +120,11 @@ public class PD40TcpClientService extends Service {
 		// Tell the user we stopped.
 		Toast.makeText(this, R.string.pd40tcp_service_stopped,
 				Toast.LENGTH_SHORT).show();
+	}
+
+	public void restartServiceThreadWithIp(String targetIp) {
+		stopServiceThread();
+		startServiceThread(targetIp);
 	}
 
 	public void addDataHandler(DataHandler handler) {
@@ -162,18 +167,21 @@ public class PD40TcpClientService extends Service {
 		return ret;
 	}
 
-	protected boolean startServiceThread() {
+	protected boolean startServiceThread(String serverIp) {
+		final String finalServerIp = (serverIp.isEmpty()) ? SERVER_DEFAULT_IP
+				: serverIp;
+
 		if (serviceThreadRunning())
 			return false;
 		setServiceThread(new Thread(new Runnable() {
 			@Override
 			public void run() {
-				Log.d(ST_TAG, "service thread started");
+				Log.d(ST_TAG, "TCP Client Service thread started");
 				setServiceRunning(true);
 				while (serviceThreadRunning()) {
 					Vector<String> availableIps = listAvailableIps();
 					if (availableIps.size() == 0) {
-						availableIps.add(SERVER_DEFAULT_IP);
+						availableIps.add(finalServerIp);
 					}
 					for (int i = 0; i < availableIps.size(); i++) {
 						if (!serviceThreadRunning())
