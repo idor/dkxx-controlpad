@@ -59,6 +59,7 @@ public class ScanWifiActivity extends ListFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+		listUpdateNotify();
 	}
 
 	@Override
