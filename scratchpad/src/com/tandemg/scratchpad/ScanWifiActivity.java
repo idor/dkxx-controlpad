@@ -106,8 +106,8 @@ public class ScanWifiActivity extends ListFragment {
 								Log.d(TAG,
 										"Unknown Service Type: "
 												+ service.getServiceType());
-							} else if (service.getServiceName().contains(
-									"PD40Server")) {
+							} else if (service.getServiceName()
+									.contains("DK40")) {
 								mNsdHelper.resolveService(service);
 							}
 						} catch (Exception e) {
@@ -314,7 +314,7 @@ public class ScanWifiActivity extends ListFragment {
 			if (item != null) {
 				TextView textView = (TextView) v;
 				if (textView != null) {
-					textView.setText(item.getServiceName());
+					textView.setText(item.getServiceName().replace("-", " - "));
 					textView.setOnClickListener(new OnClickListener() {
 						public void onClick(View v) {
 							updatePd40DeviceIp(item);
