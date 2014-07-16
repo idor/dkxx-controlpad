@@ -398,6 +398,10 @@ public class ScratchpadActivity extends FragmentActivity {
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		int keyCode = event.getKeyCode();
+		if (event.getAction() != KeyEvent.ACTION_DOWN) {
+			// don't responde to actions other then Down
+			return super.dispatchKeyEvent(event);
+		}
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_VOLUME_UP:
 			mTcpClientService.notifyVolumeUp();
