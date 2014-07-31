@@ -520,6 +520,10 @@ public class ScratchpadActivity extends FragmentActivity {
 		});
 	}
 
+	public String getServerIp() {
+		return mTcpClientService.serverIp();
+	}
+
 	public void getGlassBrightness() {
 		try {
 			if (mTcpClientService != null)

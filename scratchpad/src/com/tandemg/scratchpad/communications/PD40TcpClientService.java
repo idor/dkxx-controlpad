@@ -518,7 +518,7 @@ public class PD40TcpClientService extends Service {
 		serverPort = port;
 	}
 
-	protected synchronized String serverIp() {
+	public synchronized String serverIp() {
 		return serverIp;
 	}
 
