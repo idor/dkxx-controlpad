@@ -40,7 +40,7 @@ import com.tandemg.scratchpad.location.PD40LocationService;
 import com.tandemg.scratchpad.location.PD40LocationService.PD40LocationServiceBinder;
 
 public class ScratchpadActivity extends FragmentActivity {
-	private static final int KEYBOARD_DOUBLE_TAP_TIMEOUT = 500;
+	private static final int DOUBLE_TAP_TIMEOUT = 500;
 	private static final String TAG = "ScratchpadActivity";
 	private static final int brightnessTimeout = 5000;
 	private Fragment mouse = new MousepadActivity();
@@ -54,7 +54,7 @@ public class ScratchpadActivity extends FragmentActivity {
 	private PD40LocationService mLocationService = null;
 	public DataHandler handler = null;
 	private Thread brightnessDeamonThread = null;
-	private long keyboardTimestamp = 0;
+	private long doubleClickTimestamp = 0;
 	/**
 	 * The pager widget, which handles animation and allows swiping horizontally
 	 * to access previous and next wizard steps.
@@ -360,14 +360,14 @@ public class ScratchpadActivity extends FragmentActivity {
 		 * support, no Upper-Cases for instance.
 		 */
 
-		if (System.currentTimeMillis() - keyboardTimestamp > KEYBOARD_DOUBLE_TAP_TIMEOUT) {
-			keyboardTimestamp = System.currentTimeMillis();
+		if (System.currentTimeMillis() - doubleClickTimestamp > DOUBLE_TAP_TIMEOUT) {
+			doubleClickTimestamp = System.currentTimeMillis();
 			String message = "Double-click for keyboard input...";
 			Toast.makeText(this.getApplicationContext(), message,
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
-		keyboardTimestamp = 0;
+		doubleClickTimestamp = 0;
 		AlertDialog.Builder alert = new AlertDialog.Builder(this); // android.R.style.Theme_Dialog
 		alert.setTitle("Push string");
 		alert.setMessage("");
