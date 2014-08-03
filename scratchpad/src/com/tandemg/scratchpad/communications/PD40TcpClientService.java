@@ -747,4 +747,8 @@ public class PD40TcpClientService extends Service {
 		this.sendMessage(MessageTypes.MSG_GENERIC_KEYBOARD_BTN + " "
 				+ MessageTypes.MSG_GENERIC_KEYBOARD_BTN_VOLUMEDOWN);
 	}
+
+	public void notifyStartTftpServer() {
+		notifyBroadcastIntent("startfiletransfer", "", "");
+	}
 }
