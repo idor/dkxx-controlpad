@@ -162,7 +162,6 @@ public class ScratchpadActivity extends FragmentActivity {
 		VertSeekBar brightnessBar = (VertSeekBar) findViewById(R.id.brightness_bar);
 		brightnessBar.setProgress(50);
 		getGlassBrightness();
-		setBatteryOnLongClickListener();
 
 		brightnessBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			@Override
@@ -532,17 +531,6 @@ public class ScratchpadActivity extends FragmentActivity {
 			Log.e(TAG, "Error: " + e.toString(), e);
 			e.printStackTrace();
 		}
-	}
-
-	public void setBatteryOnLongClickListener() {
-		final TextView batteryTextView = (TextView) findViewById(R.id.battery_status);
-		batteryTextView.setOnLongClickListener(new OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View v) {
-				mPager.setCurrentItem(2);
-				return false;
-			}
-		});
 	}
 
 	public void getGlassBatteryStatus() {
