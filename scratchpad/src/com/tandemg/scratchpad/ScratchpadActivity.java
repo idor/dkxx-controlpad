@@ -342,6 +342,17 @@ public class ScratchpadActivity extends FragmentActivity {
 		}
 	}
 
+	public void onClick_Network_Discovery(View v) {
+		if (System.currentTimeMillis() - doubleClickTimestamp > DOUBLE_TAP_TIMEOUT) {
+			doubleClickTimestamp = System.currentTimeMillis();
+			String message = "Double-click for device Network-Discovery...";
+			Toast.makeText(this.getApplicationContext(), message,
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
+		mPager.setCurrentItem(2);
+	}
+
 	public void onClick_Options(View v) {
 
 		try {

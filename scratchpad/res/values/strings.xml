@@ -10,6 +10,7 @@
     <string name="button_home">HOME</string>
     <string name="button_keyboard">Keyboard</string>
     <string name="button_options">Options</string>
+    <string name="button_network_discovery">Network Discovery</string>
     <string name="title_activity_scratchpad">Lumus Control Pad</string>
 
     <!-- Pager Labels -->

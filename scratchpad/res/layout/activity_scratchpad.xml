@@ -54,7 +54,7 @@
         <ImageButton
             android:id="@+id/button_back"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="65dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:onClick="onClick_Back"
             android:src="@drawable/ic_menu_back"
@@ -63,7 +63,7 @@
         <ImageButton
             android:id="@+id/button_home"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="65dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:onClick="onClick_Home"
             android:src="@drawable/ic_menu_home"
@@ -72,7 +72,7 @@
         <ImageButton
             android:id="@+id/button_keyboard"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="65dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="left"
             android:onClick="onClick_Keyboard"
@@ -82,19 +82,22 @@
         <ImageButton
             android:id="@+id/button_options"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="65dp"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:gravity="left"
             android:onClick="onClick_Options"
             android:src="@drawable/ic_menu_settings_holo_light"
             android:text="@string/button_options" />
 
-        <ImageView
-            android:id="@+id/place_holder2"
-            android:layout_width="15dp"
-            android:layout_height="match_parent"
-            android:alpha="0"
-            android:src="@drawable/ic_menu_back" />
+        <ImageButton
+            android:id="@+id/button_network_discovery"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:onClick="onClick_Network_Discovery"
+            android:src="@drawable/ic_action_network_wifi"
+            android:text="@string/button_options" />
     </LinearLayout>
 
 </RelativeLayout>
