@@ -61,7 +61,7 @@ public class QuickLaunchActivity extends Fragment {
 		tmp = "Lumus Demo,ACTION_MAIN,com.tandemg.pd40demo,MainActivity";
 		intentStrings.add(pref.getString("4", tmp).split(","));
 
-		tmp = "Image Capture,android.media.action.IMAGE_CAPTURE, , ";
+		tmp = "Image Capture,android.media.action.STILL_IMAGE_CAMERA, , ";
 		intentStrings.add(pref.getString("5", tmp).split(","));
 
 		tmp = "GyroCompass,ACTION_MAIN,fi.finwe.gyrocompass,Compass";
