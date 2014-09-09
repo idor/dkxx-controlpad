@@ -70,6 +70,22 @@ public class ScratchpadActivity extends FragmentActivity {
 
 	public ScratchpadActivity() {
 		handler = new DataHandler();
+		mLocationConnection = new ServiceConnection() {
+			@Override
+			public void onServiceConnected(ComponentName name, IBinder service) {
+				Log.v(TAG, "Location service connected");
+				PD40LocationServiceBinder binder = (PD40LocationServiceBinder) service;
+				mLocationService = binder.getService();
+				mLocationServiceBound = true;
+			}
+
+			@Override
+			public void onServiceDisconnected(ComponentName name) {
+				Log.v(TAG, "Location service disconnected");
+				mLocationServiceBound = false;
+				mLocationService = null;
+			}
+		};
 		mTcpClientConnection = new ServiceConnection() {
 			@Override
 			public void onServiceConnected(ComponentName name, IBinder service) {
@@ -135,6 +151,10 @@ public class ScratchpadActivity extends FragmentActivity {
 		setContentView(R.layout.activity_scratchpad);
 
 		Intent intent;
+
+		intent = new Intent(this, PD40LocationService.class);
+		bindService(intent, mLocationConnection, Context.BIND_AUTO_CREATE);
+
 		intent = new Intent(this, PD40TcpClientService.class);
 		bindService(intent, mTcpClientConnection, Context.BIND_AUTO_CREATE);
 
