@@ -20,6 +20,7 @@ import android.app.Service;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -750,5 +751,16 @@ public class PD40TcpClientService extends Service {
 
 	public void notifyStartTftpServer() {
 		notifyBroadcastIntent("startfiletransfer", "", "");
+	}
+
+	public void notifyLocation(Location location) {
+		sendMessage(MessageTypes.MSG_LOCATION_READY
+				+ " "
+				+ "gps"
+				// + " " + location.getProvider()
+				+ " " + location.getTime() + " " + location.getLatitude() + " "
+				+ location.getLongitude() + " " + location.getAltitude() + " "
+				+ location.getAccuracy() + " " + location.getBearing() + " "
+				+ location.getSpeed());
 	}
 }

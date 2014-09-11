@@ -15,7 +15,8 @@ public class MessageTypes {
 	public static final String MSG_TOUCH_UP = "U";
 	public static final String MSG_TOUCH_CANCEL = "C";
 	public static final String MSG_TOUCH_DIMENSIONS = "d";
-
+	// location messages
+	public static final String MSG_LOCATION_READY = "L";
 	// mouse messages
 	public static final String MSG_MOUSE_CMD = "m";
 	// mouse sub-commands

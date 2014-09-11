@@ -21,7 +21,7 @@ public class PD40LocationService extends Service implements LocationListener,
 		GooglePlayServicesClient.OnConnectionFailedListener {
 
 	private static final String TAG = "PD40LocationService";
-
+	private LocationCallback mLocationCallback = null;
 	// Milliseconds per second
 	private static final int MILLISECONDS_PER_SECOND = 1000;
 	// Update frequency in seconds
@@ -50,6 +50,10 @@ public class PD40LocationService extends Service implements LocationListener,
 		}
 	}
 
+	public void registerOnLocationCallback(LocationCallback l) {
+		mLocationCallback = l;
+	}
+
 	public PD40LocationService() {
 	}
 
@@ -64,12 +68,13 @@ public class PD40LocationService extends Service implements LocationListener,
 		Log.i(TAG, "onCreate");
 		super.onCreate();
 
-		if (servicesConnected()) {
+		if (isGooglePlayAvailable()) {
 			mLocationClient = new LocationClient(this, this, this);
 			mLocationClient.connect();
 
 			// Create the LocationRequest object
 			mLocationRequest = LocationRequest.create();
+
 			// Use high accuracy
 			mLocationRequest
 					.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -96,7 +101,7 @@ public class PD40LocationService extends Service implements LocationListener,
 		super.onDestroy();
 	}
 
-	private boolean servicesConnected() {
+	private boolean isGooglePlayAvailable() {
 		// Check that Google Play services is available
 		int resultCode = GooglePlayServicesUtil
 				.isGooglePlayServicesAvailable(this);
@@ -146,6 +151,7 @@ public class PD40LocationService extends Service implements LocationListener,
 		Log.v(TAG, "altitude: " + location.getAltitude());
 		Log.v(TAG, "bearing: " + location.getBearing());
 		Log.v(TAG, "speed: " + location.getSpeed());
+		mLocationCallback.onLocation(location);
 	}
 
 	public final Location getLocation() {

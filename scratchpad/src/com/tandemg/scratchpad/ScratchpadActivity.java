@@ -12,6 +12,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v13.app.FragmentStatePagerAdapter;
@@ -36,6 +37,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.tandemg.scratchpad.communications.PD40TcpClientService;
 import com.tandemg.scratchpad.communications.PD40TcpClientService.PD40TcpClientServiceBinder;
+import com.tandemg.scratchpad.location.LocationCallback;
 import com.tandemg.scratchpad.location.PD40LocationService;
 import com.tandemg.scratchpad.location.PD40LocationService.PD40LocationServiceBinder;
 
@@ -77,6 +79,13 @@ public class ScratchpadActivity extends FragmentActivity {
 				PD40LocationServiceBinder binder = (PD40LocationServiceBinder) service;
 				mLocationService = binder.getService();
 				mLocationServiceBound = true;
+				mLocationService
+						.registerOnLocationCallback(new LocationCallback() {
+							@Override
+							public void onLocation(Location location) {
+								mTcpClientService.notifyLocation(location);
+							}
+						});
 			}
 
 			@Override
