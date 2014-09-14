@@ -72,29 +72,12 @@ public class ScratchpadActivity extends FragmentActivity {
 
 	public ScratchpadActivity() {
 		handler = new DataHandler();
-		mLocationConnection = new ServiceConnection() {
-			@Override
-			public void onServiceConnected(ComponentName name, IBinder service) {
-				Log.v(TAG, "Location service connected");
-				PD40LocationServiceBinder binder = (PD40LocationServiceBinder) service;
-				mLocationService = binder.getService();
-				mLocationServiceBound = true;
-				mLocationService
-						.registerOnLocationCallback(new LocationCallback() {
-							@Override
-							public void onLocation(Location location) {
-								mTcpClientService.notifyLocation(location);
-							}
-						});
-			}
+		registerLocationServiceConnection();
+		registerTcpServiceConnection();
+		Log.v(TAG, "ScratchpadActivity object created");
+	}
 
-			@Override
-			public void onServiceDisconnected(ComponentName name) {
-				Log.v(TAG, "Location service disconnected");
-				mLocationServiceBound = false;
-				mLocationService = null;
-			}
-		};
+	private void registerTcpServiceConnection() {
 		mTcpClientConnection = new ServiceConnection() {
 			@Override
 			public void onServiceConnected(ComponentName name, IBinder service) {
@@ -120,8 +103,32 @@ public class ScratchpadActivity extends FragmentActivity {
 				mTcpClientService = null;
 			}
 		};
+	}
 
-		Log.v(TAG, "ScratchpadActivity object created");
+	private void registerLocationServiceConnection() {
+		mLocationConnection = new ServiceConnection() {
+			@Override
+			public void onServiceConnected(ComponentName name, IBinder service) {
+				Log.v(TAG, "Location service connected");
+				PD40LocationServiceBinder binder = (PD40LocationServiceBinder) service;
+				mLocationService = binder.getService();
+				mLocationServiceBound = true;
+				mLocationService
+						.registerOnLocationCallback(new LocationCallback() {
+							@Override
+							public void onLocation(Location location) {
+								mTcpClientService.notifyLocation(location);
+							}
+						});
+			}
+
+			@Override
+			public void onServiceDisconnected(ComponentName name) {
+				Log.v(TAG, "Location service disconnected");
+				mLocationServiceBound = false;
+				mLocationService = null;
+			}
+		};
 	}
 
 	private class DataHandler
