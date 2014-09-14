@@ -72,8 +72,6 @@ public class ScratchpadActivity extends FragmentActivity {
 
 	public ScratchpadActivity() {
 		handler = new DataHandler();
-		registerLocationServiceConnection();
-		registerTcpServiceConnection();
 		Log.v(TAG, "ScratchpadActivity object created");
 	}
 
@@ -166,13 +164,8 @@ public class ScratchpadActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_scratchpad);
 
-		Intent intent;
-
-		intent = new Intent(this, PD40LocationService.class);
-		bindService(intent, mLocationConnection, Context.BIND_AUTO_CREATE);
-
-		intent = new Intent(this, PD40TcpClientService.class);
-		bindService(intent, mTcpClientConnection, Context.BIND_AUTO_CREATE);
+		registerLocationServiceConnection();
+		registerTcpServiceConnection();
 
 		// Show the Up button in the action bar.
 		setupActionBar();
@@ -252,14 +245,6 @@ public class ScratchpadActivity extends FragmentActivity {
 
 	@Override
 	public void onDestroy() {
-		if (mLocationServiceBound) {
-			Log.v(TAG, "unbind location service");
-			unbindService(mLocationConnection);
-		}
-		if (mTcpServiceBound) {
-			Log.v(TAG, "unbind tcp service");
-			unbindService(mTcpClientConnection);
-		}
 		super.onDestroy();
 	}
 
@@ -282,13 +267,35 @@ public class ScratchpadActivity extends FragmentActivity {
 	@Override
 	protected void onPause() {
 		Log.d(TAG, "pause");
+		if (mLocationServiceBound) {
+			Log.v(TAG, "unbind location service");
+			unbindService(mLocationConnection);
+		}
+		if (mTcpServiceBound) {
+			Log.v(TAG, "unbind tcp service");
+			unbindService(mTcpClientConnection);
+		}
 		super.onPause();
 	}
 
 	@Override
 	protected void onResume() {
-		Log.d(TAG, "resume");
 		super.onResume();
+		Log.d(TAG, "resume");
+		bindToLocationServiceConnection();
+		bindToTcpServiceConnection();
+	}
+
+	private void bindToTcpServiceConnection() {
+		Intent intent;
+		intent = new Intent(this, PD40TcpClientService.class);
+		bindService(intent, mTcpClientConnection, Context.BIND_AUTO_CREATE);
+	}
+
+	private void bindToLocationServiceConnection() {
+		Intent intent;
+		intent = new Intent(this, PD40LocationService.class);
+		bindService(intent, mLocationConnection, Context.BIND_AUTO_CREATE);
 	}
 
 	@Override
