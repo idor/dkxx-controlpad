@@ -141,10 +141,8 @@ public class PD40LocationService extends Service implements LocationListener,
 	public void onLocationChanged(Location location) {
 		Log.d(TAG, "location changed: " + location.toString());
 		mCurrentLocation = location;
-		Time t = new Time();
 		Log.v(TAG, "provider: " + location.getProvider().toString());
-		t.set(location.getTime());
-		Log.v(TAG, "time: " + t.hour + ":" + t.minute + "." + t.second);
+		Log.v(TAG, "time: " + location.getTime());
 		Log.v(TAG, "accuracy: " + location.getAccuracy());
 		Log.v(TAG, "latitude: " + location.getLatitude());
 		Log.v(TAG, "longitude: " + location.getLongitude());
