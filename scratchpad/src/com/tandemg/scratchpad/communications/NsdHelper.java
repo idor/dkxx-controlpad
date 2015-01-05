@@ -76,8 +76,14 @@ public class NsdHelper {
 	}
 
 	public void discoverServices() {
-		mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD,
-				mDiscoveryListener);
+		try {
+			mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD,
+					mDiscoveryListener);
+		} catch (IllegalArgumentException e) {
+			// Intended exception - is being throw when discover services is already working.
+			// Android system manages re-starts by itself.
+			Log.i(TAG, "This is behaviour is expected, catched IllegalArgumentException - " + e.getMessage());
+		}
 	}
 
 	public void stopDiscovery() {
