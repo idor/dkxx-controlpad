@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
@@ -481,6 +482,14 @@ public class ScratchpadActivity extends FragmentActivity {
 		@Override
 		public Fragment getItem(int position) {
 			Log.e(TAG, "going to position: " + Integer.toString(position));
+
+			try { // workaround for FragmentAdapter bug.
+				((ViewGroup) quickLaunch.getView())
+						.findViewById(R.id.OpgalMenu).setClickable(
+								position == 1);
+			} catch (NullPointerException e) {
+				Log.i(TAG, "expected exception");
+			}
 			switch (position) {
 			case 1:
 				if (quickLaunch == null) {
