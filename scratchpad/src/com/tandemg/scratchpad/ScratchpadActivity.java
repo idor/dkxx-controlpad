@@ -152,6 +152,12 @@ public class ScratchpadActivity extends FragmentActivity {
 					 * is: "P [1|0 - 1 for success ] [int-currentValue]"
 					 */
 					break;
+				case 'T':
+					/*
+					 * TODO: add action on Toggle_3d_mode request returned, it's syntax
+					 * is: "T [1|0 - 1 for 3D mode]"
+					 */
+					break;
 				}
 			} catch (NumberFormatException e) {
 				Log.d(TAG, "Failed to Parse the expected int: " + temp[1]
