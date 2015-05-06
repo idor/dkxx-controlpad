@@ -158,6 +158,12 @@ public class ScratchpadActivity extends FragmentActivity {
 					 * is: "T [1|0 - 1 for 3D mode]"
 					 */
 					break;
+				case 'V':
+					/*
+					 * TODO: add action on protocol_version request returned, it's syntax
+					 * is: "V [TBD]"
+					 */
+					break;
 				}
 			} catch (NumberFormatException e) {
 				Log.d(TAG, "Failed to Parse the expected int: " + temp[1]
