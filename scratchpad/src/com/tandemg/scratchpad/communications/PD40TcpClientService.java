@@ -355,6 +355,7 @@ public class PD40TcpClientService extends Service {
 			}
 			Log.i(TAG, "connected to server");
 		}
+		notifyProtocolVersion();
 		return true;
 	}
 
@@ -762,5 +763,9 @@ public class PD40TcpClientService extends Service {
 				+ location.getLongitude() + " " + location.getAltitude() + " "
 				+ location.getAccuracy() + " " + location.getBearing() + " "
 				+ location.getSpeed());
+	}
+
+	public void notifyProtocolVersion() {
+		this.sendMessage(MessageTypes.MSG_GET_PROTOCOL_VERSION);
 	}
 }

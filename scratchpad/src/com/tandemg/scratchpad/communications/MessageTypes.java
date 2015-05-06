@@ -1,6 +1,8 @@
 package com.tandemg.scratchpad.communications;
 
 public class MessageTypes {
+	// protocol versions
+	public static final String MSG_GET_PROTOCOL_VERSION = "V";
 
 	// Android messages
 	public static final String MSG_BACK = "B";
