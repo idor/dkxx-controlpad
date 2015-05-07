@@ -50,4 +50,7 @@ public class MessageTypes {
 	// Power Button
 	public static final String EV_PWR_BTN_PRESS = "w";
 	public static final String EV_PWR_BTN_RELEASE = "W";
+
+	// 3D toggling button
+	public static final String MSG_TOGGLE_3D = "T";
 }

@@ -768,4 +768,8 @@ public class PD40TcpClientService extends Service {
 	public void notifyProtocolVersion() {
 		this.sendMessage(MessageTypes.MSG_GET_PROTOCOL_VERSION);
 	}
+
+	public void notifyToggleThreeDeeMode() {
+		this.sendMessage(MessageTypes.MSG_TOGGLE_3D);
+	}
 }
