@@ -92,6 +92,12 @@
         android:layout_height="wrap_content"
         android:onClick="onQuickLauncherClick" />
 
+        <Button
+        android:id="@+id/quickLauncherToggle3D"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Toggle 3D Mode" />
+
     <Button
         android:id="@+id/quickLauncherShutdown"
         android:layout_width="match_parent"

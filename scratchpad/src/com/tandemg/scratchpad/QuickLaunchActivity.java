@@ -114,6 +114,15 @@ public class QuickLaunchActivity extends Fragment {
 		b.setText(intentStrings.get(8)[0]);
 		b.setOnClickListener(mClickListener);
 
+		b = (Button) rootView.findViewById(R.id.quickLauncherToggle3D);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				((ScratchpadActivity) getActivity()).getTcpService()
+						.notifyToggleThreeDeeMode();
+			}
+		});
+
 		/* set shutdown button functionality */
 		Button btn = (Button) rootView.findViewById(R.id.quickLauncherShutdown);
 		btn.setOnTouchListener(new OnTouchListener() {
