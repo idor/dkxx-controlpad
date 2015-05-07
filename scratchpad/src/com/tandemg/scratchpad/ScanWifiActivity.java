@@ -108,7 +108,7 @@ public class ScanWifiActivity extends ListFragment {
 										"Unknown Service Type: "
 												+ service.getServiceType());
 							} else if (service.getServiceName()
-									.contains("DK40")) {
+									.contains("DK")) {
 								mNsdHelper.resolveService(service);
 							}
 						} catch (Exception e) {
