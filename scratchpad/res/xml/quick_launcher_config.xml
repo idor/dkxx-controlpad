@@ -5,4 +5,5 @@
 	<string name="2">Text,Action,Package,Activity</string>
 	<string name="3">Text,Action,Package,Activity</string>
 	<string name="4">Text,Action,Package,Activity</string>
+	<string name="last_used_ip">192.168.43.140</string>
 </map>

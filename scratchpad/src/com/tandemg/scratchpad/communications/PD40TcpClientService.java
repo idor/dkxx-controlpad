@@ -20,9 +20,12 @@ import android.app.Service;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.os.Binder;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -92,7 +95,28 @@ public class PD40TcpClientService extends Service {
 			setupNotification();
 			showNotificationStarted();
 		}
-		startServiceThread("");
+		startServiceThread(this.fetchLastUsedIp());
+	}
+
+	@SuppressWarnings("deprecation")
+	private String fetchLastUsedIp() {
+		String ret_ip;
+		// SharedPreferences prefs =
+		// PreferenceManager.getDefaultSharedPreferences();
+		SharedPreferences prefs = this.getSharedPreferences(
+				"quick_launcher_config", Context.MODE_WORLD_WRITEABLE);
+		ret_ip = prefs.getString("last_used_ip", "");
+		Log.v(TAG, "connecting to last known IP: " + ret_ip);
+		return ret_ip;
+	}
+
+	@SuppressWarnings("deprecation")
+	private void storeLastUsedIp(String ip) {
+		SharedPreferences prefs = this.getSharedPreferences(
+				"quick_launcher_config", Context.MODE_WORLD_WRITEABLE);
+		Editor e = prefs.edit();
+		e.putString("last_used_ip", ip);
+		e.apply();
 	}
 
 	@Override
@@ -354,6 +378,7 @@ public class PD40TcpClientService extends Service {
 				return false;
 			}
 			Log.i(TAG, "connected to server");
+			storeLastUsedIp(ip);
 		}
 		notifyProtocolVersion();
 		return true;
