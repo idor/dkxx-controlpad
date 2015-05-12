@@ -33,7 +33,7 @@ public class TechnicianActivity extends Fragment {
 				container, false);
 
 		bindButtonsToConfigFile();
-
+		this.setFragmentChildrenEnabled(false);
 		return rootView;
 	}
 
@@ -147,5 +147,17 @@ public class TechnicianActivity extends Fragment {
 			Log.i(TAG, "Label is missing while assigning Button #" + buttonId);
 		}
 
+	}
+
+	public void setFragmentChildrenEnabled(boolean enable) {
+		if (rootView == null) {
+			Log.e(TAG, "failed de-activating Fragment \n");
+			return;
+		}
+
+		int childCount = rootView.getChildCount();
+		for (int i = 0; i < childCount; i++) {
+			rootView.getChildAt(i).setEnabled(enable);
+		}
 	}
 }

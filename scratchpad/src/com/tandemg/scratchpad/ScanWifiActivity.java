@@ -53,6 +53,7 @@ public class ScanWifiActivity extends ListFragment {
 						restartNsdDiscovery(v);
 					}
 				});
+		this.setFragmentChildrenEnabled(false);
 		return viewGroup;
 	}
 
@@ -332,5 +333,18 @@ public class ScanWifiActivity extends ListFragment {
 		Toast.makeText(getActivity(), "Chosen device IP: " + ip, 0).show();
 		((ScratchpadActivity) getActivity()).getTcpService()
 				.restartServiceThreadWithIp(ip);
+	}
+
+
+	public void setFragmentChildrenEnabled(boolean enable) {
+		if (viewGroup == null) {
+			Log.e(TAG, "failed de-activating Fragment \n");
+			return;
+		}
+
+		int childCount = viewGroup.getChildCount();
+		for (int i = 0; i < childCount; i++) {
+			viewGroup.getChildAt(i).setEnabled(enable);
+		}
 	}
 }

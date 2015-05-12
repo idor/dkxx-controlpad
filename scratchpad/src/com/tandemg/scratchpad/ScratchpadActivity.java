@@ -58,6 +58,7 @@ public class ScratchpadActivity extends FragmentActivity {
 	public DataHandler handler = null;
 	private Thread brightnessDeamonThread = null;
 	private long doubleClickTimestamp = 0;
+	private int mCurrentFragmentPosition = 0;
 	/**
 	 * The pager widget, which handles animation and allows swiping horizontally
 	 * to access previous and next wizard steps.
@@ -494,13 +495,22 @@ public class ScratchpadActivity extends FragmentActivity {
 		@Override
 		public Fragment getItem(int position) {
 			Log.e(TAG, "going to position: " + Integer.toString(position));
-
-			try { // workaround for FragmentAdapter bug.
-				((ViewGroup) quickLaunch.getView())
-						.findViewById(R.id.OpgalMenu).setClickable(
-								position == 1);
-			} catch (NullPointerException e) {
-				Log.i(TAG, "expected exception");
+			if (mCurrentFragmentPosition != position) {
+				// de-activate old fragment
+				switch (mCurrentFragmentPosition) {
+				case 0:
+					((MousepadActivity) mouse)
+							.setFragmentChildrenEnabled(false);
+					break;
+				case 1:
+					((ScanWifiActivity) wifiScanner)
+							.setFragmentChildrenEnabled(false);
+					break;
+				case 2:
+					((QuickLaunchActivity) quickLaunch)
+							.setFragmentChildrenEnabled(false);
+					break;
+				}
 			}
 			switch (position) {
 			case 1:
@@ -508,12 +518,16 @@ public class ScratchpadActivity extends FragmentActivity {
 					Log.d(TAG, "quick launch null");
 					quickLaunch = new QuickLaunchActivity();
 				}
+				((QuickLaunchActivity) quickLaunch)
+						.setFragmentChildrenEnabled(true);
 				return (Fragment) quickLaunch;
 			case 2:
 				if (wifiScanner == null) {
 					Log.d(TAG, "wifiScanner was null");
 					wifiScanner = new ScanWifiActivity();
 				}
+				((ScanWifiActivity) wifiScanner)
+						.setFragmentChildrenEnabled(true);
 				return (Fragment) wifiScanner;
 			case 0:
 			default:
@@ -521,6 +535,7 @@ public class ScratchpadActivity extends FragmentActivity {
 					Log.d(TAG, "mouse was null");
 					mouse = new MousepadActivity();
 				}
+				((MousepadActivity) mouse).setFragmentChildrenEnabled(true);
 				return (Fragment) mouse;
 			}
 		}

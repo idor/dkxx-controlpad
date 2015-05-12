@@ -36,7 +36,7 @@ public class TouchpadActivity extends Fragment implements IScartchpadClient {
 		// attach the scratch pad to its view object
 		LinearLayout ln = (LinearLayout) rootView.findViewById(R.id.surface);
 		ln.addView(mGLView);
-
+		this.setFragmentChildrenEnabled(false);
 		return rootView;
 	}
 
@@ -135,6 +135,18 @@ public class TouchpadActivity extends Fragment implements IScartchpadClient {
 			break;
 		default:
 			Log.e(TAG, "event type not supported");
+		}
+	}
+
+	public void setFragmentChildrenEnabled(boolean enable) {
+		if (rootView == null) {
+			Log.e(TAG, "failed de-activating Fragment \n");
+			return;
+		}
+
+		int childCount = rootView.getChildCount();
+		for (int i = 0; i < childCount; i++) {
+			rootView.getChildAt(i).setEnabled(enable);
 		}
 	}
 }
