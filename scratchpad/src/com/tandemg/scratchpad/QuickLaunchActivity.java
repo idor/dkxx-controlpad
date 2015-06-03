@@ -28,6 +28,7 @@ public class QuickLaunchActivity extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+
 		OnClickListener mClickListener = new OnClickListener() {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
@@ -204,20 +205,8 @@ public class QuickLaunchActivity extends Fragment {
 			}
 
 		});
-		this.setFragmentChildrenEnabled(false);
+
 		return rootView;
-	}
-
-	public void setFragmentChildrenEnabled(boolean enable) {
-		if (rootView == null) {
-			Log.e(TAG, "failed de-activating Fragment \n");
-			return;
-		}
-
-		int childCount = rootView.getChildCount();
-		for (int i = 0; i < childCount; i++) {
-			rootView.getChildAt(i).setEnabled(enable);
-		}
 	}
 
 	public void onQuickLauncherClick(View view) { // should improve input

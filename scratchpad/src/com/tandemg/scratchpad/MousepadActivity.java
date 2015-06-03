@@ -106,7 +106,7 @@ public class MousepadActivity extends Fragment {
 						(byte) 2);
 			}
 		});
-		this.setFragmentChildrenEnabled(false);
+
 		return rootView;
 	}
 
@@ -282,18 +282,5 @@ public class MousepadActivity extends Fragment {
 			break;
 		}
 		return true;
-	}
-
-
-	public void setFragmentChildrenEnabled(boolean enable) {
-		if (rootView == null) {
-			Log.e(TAG, "failed de-activating Fragment \n");
-			return;
-		}
-
-		int childCount = rootView.getChildCount();
-		for (int i = 0; i < childCount; i++) {
-			rootView.getChildAt(i).setEnabled(enable);
-		}
 	}
 }
